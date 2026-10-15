@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ensayo Déficit EE. UU.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+
+/* Layout: una columna de estudio tipo cuaderno de balanza de pagos; barra superior fija con puntaje y bloques. */
+:root{
+  --bg:#F2F4F3; --surface:#FFFFFF; --surface-2:#E7ECEA; --line:#CDD6D3;
+  --fg:#16211F; --muted:#56635F;
+  --ink:#0F3D3E; --ink-soft:#DCE8E6;
+  --rust:#B5472F; --rust-soft:#F6E1DA;
+  --gold:#9A6A10; --gold-soft:#F5E9CC;
+  --slate:#45566B; --slate-soft:#E1E7EF;
+  --ok:#1E7A4C; --ok-soft:#DDF1E5;
+  --bad:#B42318; --bad-soft:#FBE3E0;
+  --display:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F1716; --surface:#16211F; --surface-2:#1D2B29; --line:#2E3F3C;
+  --fg:#E4ECEA; --muted:#9AABA6;
+  --ink:#7CC4BA; --ink-soft:#1C3533;
+  --rust:#EE8E76; --rust-soft:#3A221C;
+  --gold:#E2B85C; --gold-soft:#352A12;
+  --slate:#A9B9CF; --slate-soft:#232C38;
+  --ok:#5FD098; --ok-soft:#163324;
+  --bad:#FF8A7D; --bad-soft:#3B1C19;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1716; --surface:#16211F; --surface-2:#1D2B29; --line:#2E3F3C;
+  --fg:#E4ECEA; --muted:#9AABA6;
+  --ink:#7CC4BA; --ink-soft:#1C3533;
+  --rust:#EE8E76; --rust-soft:#3A221C;
+  --gold:#E2B85C; --gold-soft:#352A12;
+  --slate:#A9B9CF; --slate-soft:#232C38;
+  --ok:#5FD098; --ok-soft:#163324;
+  --bad:#FF8A7D; --bad-soft:#3B1C19;
+  color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-text-size-adjust:100%}
+.wrap{max-width:780px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.2;margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+/* Cabecera */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;flex-direction:column;gap:10px;padding-block:12px}
+.toprow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:600;font-size:1.05rem;color:var(--ink)}
+.score{font-family:var(--mono);font-size:.9rem;font-variant-numeric:tabular-nums;color:var(--muted)}
+.score b{color:var(--fg);font-weight:500}
+.tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.tab{flex:1 0 auto;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;cursor:pointer;font-size:.88rem;white-space:nowrap;display:flex;gap:8px;align-items:center}
+.tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.tab .tp{font-family:var(--mono);font-size:.78rem;opacity:.8;font-variant-numeric:tabular-nums}
+
+/* Portada */
+.intro{padding-block:28px 8px;display:flex;flex-direction:column;gap:12px}
+.eyebrow{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.intro h1{font-size:clamp(1.7rem,4.6vw,2.4rem);color:var(--fg)}
+.intro p{margin:0;max-width:65ch;color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:.85rem;color:var(--muted)}
+.legend span{display:flex;align-items:center;gap:6px}
+.rules{font-size:.88rem;color:var(--muted);border-left:3px solid var(--line);padding-left:12px;margin:0}
+
+/* Bloque */
+main{padding-block:16px 64px}
+.blockhead{display:flex;flex-direction:column;gap:6px;padding-block:18px 10px}
+.blockhead .num{font-family:var(--mono);font-size:.8rem;color:var(--rust);letter-spacing:.06em;text-transform:uppercase}
+.blockhead h2{font-size:clamp(1.4rem,3.6vw,1.8rem)}
+.blockhead p{margin:0;color:var(--muted);max-width:65ch}
+.stream{display:flex;flex-direction:column;gap:18px}
+
+/* Lección */
+details.lesson{background:var(--surface-2);border-radius:var(--r);border:1px solid var(--line)}
+details.lesson>summary{list-style:none;cursor:pointer;padding:16px 18px;display:flex;flex-direction:column;gap:6px}
+details.lesson>summary::-webkit-details-marker{display:none}
+.lhead{display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap}
+.lnum{font-family:var(--mono);font-size:.78rem;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
+.lesson h3{font-size:1.25rem;color:var(--ink)}
+.badge{font-size:.75rem;border-radius:999px;padding:2px 10px;font-weight:600;white-space:nowrap}
+.badge.cl{background:var(--ink-soft);color:var(--ink)}
+.badge.co{background:var(--gold-soft);color:var(--gold)}
+.toggle{font-size:.8rem;color:var(--muted)}
+details[open] .toggle .c{display:none} details:not([open]) .toggle .o{display:none}
+.lbody{padding:0 18px 18px;display:flex;flex-direction:column;gap:14px}
+.part{background:var(--surface);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.part h4{margin:0;font-size:.78rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);display:flex;gap:8px;align-items:center}
+.part h4 .pn{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--ink);color:var(--bg);font-family:var(--mono);font-size:.72rem;letter-spacing:0}
+.part.ap{border:1.5px dashed var(--gold)}
+.part.ap h4 .pn{background:var(--gold)}
+.part p{margin:0;max-width:68ch}
+.part ul,.part ol{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:4px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:.95rem}
+.kv dt{font-weight:600;color:var(--ink)}
+.kv dd{margin:0;min-width:0}
+.formula{font-family:var(--mono);font-size:.92rem;background:var(--ink-soft);color:var(--fg);padding:8px 12px;border-radius:6px;overflow-x:auto;white-space:pre-wrap;overflow-wrap:anywhere}
+.src{font-size:.85rem;color:var(--muted)}
+.src b{color:var(--fg);font-weight:600}
+.warn{font-size:.88rem;background:var(--gold-soft);color:var(--fg);padding:8px 12px;border-radius:6px}
+.origin{font-size:.85rem;color:var(--gold);font-weight:600}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* Pregunta */
+.q{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:12px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.qn{font-family:var(--mono);font-size:.82rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.chip{font-size:.75rem;font-weight:600;border-radius:4px;padding:2px 8px;letter-spacing:.02em}
+.t-T{background:var(--ink-soft);color:var(--ink)}
+.t-EG{background:var(--gold-soft);color:var(--gold)}
+.t-EN{background:var(--rust-soft);color:var(--rust)}
+.t-L{background:var(--slate-soft);color:var(--slate)}
+.dot{width:10px;height:10px;border-radius:2px;display:inline-block}
+.stem{margin:0;font-weight:500;font-size:1.04rem;max-width:68ch}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:10px 12px;cursor:pointer;line-height:1.45}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt .L{font-family:var(--mono);font-weight:500;min-width:1.3em;color:var(--muted)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.opt.wrong .L{color:var(--bad)}
+.opt.right{background:var(--ok-soft);border-color:var(--ok)}
+.opt.right .L{color:var(--ok)}
+.opt.dim{opacity:.6}
+.fb{border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;font-size:.95rem}
+.fb p{margin:0;max-width:68ch}
+.fb .v{font-weight:600}
+.fb.hint{background:var(--gold-soft)}
+.fb.good{background:var(--ok-soft)}
+.fb.half{background:var(--gold-soft)}
+.fb.miss{background:var(--bad-soft)}
+.pts{font-family:var(--mono);font-size:.82rem}
+
+/* Resúmenes */
+.summary{border:1.5px solid var(--ink);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:12px;background:var(--surface)}
+.summary h3{font-size:1.2rem;color:var(--ink)}
+.big{font-family:var(--display);font-size:2.4rem;font-weight:700;color:var(--fg);font-variant-numeric:tabular-nums;line-height:1}
+.big small{font-size:1rem;color:var(--muted);font-weight:500}
+.meter{height:8px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--ink)}
+.studylist{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.studylist li{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;padding:10px 12px;border-radius:8px;background:var(--bg)}
+.studylist .tag{font-family:var(--mono);font-size:.78rem;font-weight:500;padding:2px 6px;border-radius:4px;height:fit-content}
+.studylist .tag.z{background:var(--bad-soft);color:var(--bad)}
+.studylist .tag.h{background:var(--gold-soft);color:var(--gold)}
+.studylist .what{font-weight:600}
+.studylist .where{grid-column:2;font-size:.88rem;color:var(--muted)}
+.muted{color:var(--muted);margin:0}
+.rows{display:flex;flex-direction:column;gap:10px}
+.brow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center}
+.brow .meter{grid-column:1 / -1}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{border:1.5px solid var(--ink);background:transparent;color:var(--ink);border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:500}
+.btn.solid{background:var(--ink);color:var(--bg)}
+.btn.danger{border-color:var(--bad);color:var(--bad)}
+.confirm{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:.92rem}
+.next{align-self:flex-start}
+@media (prefers-reduced-motion:no-preference){.fb{animation:in .18s ease-out}@keyframes in{from{transform:translateY(-3px)}to{transform:none}}}
+@media (max-width:480px){.q,.summary{padding:14px}.lbody{padding:0 12px 12px}details.lesson>summary{padding:14px 12px}.part{padding:12px}}
+</style>
+</head>
+<body>
+
+
+<header class="top">
+  <div class="wrap">
+    <div class="toprow">
+      <span class="brand">Déficit de EE. UU. · Ensayo</span>
+      <span class="score" id="scoreTop" aria-live="polite"></span>
+    </div>
+    <nav class="tabs" role="tablist" id="tabs" aria-label="Bloques"></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="intro" id="intro">
+    <span class="eyebrow">Macroeconomía Abierta de Economías Emergentes · Caso HBS 706-002</span>
+    <h1>El déficit de cuenta corriente de EE. UU.</h1>
+    <p>40 preguntas en cuatro bloques de 10. Los tres primeros siguen el caso y las clases; el cuarto, las lecturas del Módulo 3 (Uribe, Schmitt-Grohé y Woodford). Antes de cada una o dos preguntas hay una lección con la teoría de clase, el método general y la aplicación con los datos de tu guía. Tu avance se guarda en este navegador.</p>
+    <p class="rules">Puntaje: 1 al primer intento, 0,5 si aciertas después de la pista, 0 si fallas ambos intentos.</p>
+    <div class="legend" aria-label="Tipos de pregunta">
+      <span><i class="dot t-T" style="background:var(--ink)"></i>Teoría</span>
+      <span><i class="dot" style="background:var(--gold)"></i>Ejercicio con valores de la guía</span>
+      <span><i class="dot" style="background:var(--rust)"></i>Ejercicio con valores nuevos</span>
+      <span><i class="dot" style="background:var(--slate)"></i>Lectura</span>
+    </div>
+  </section>
+  <main id="main"></main>
+</div>
+
+<script>
+const TIPOS={T:"Teoría",EG:"Ejercicio · valores de la guía",EN:"Ejercicio · valores nuevos",L:"Lectura"};
+const LET=["A","B","C","D"];
+
+/* ---------------- CONTENIDO ---------------- */
+const BLOQUES=[
+{id:"b1",nombre:"Bloque 1",titulo:"Historia monetaria: del oro al euro",
+ desc:"Caso pp. 3–7. Regímenes monetarios, déficits gemelos, el Plaza y el exceso de ahorro mundial. Casi todo este bloque es lectura del caso con teoría complementaria; la clase solo aporta la identidad de la cuenta corriente.",
+ items:[
+ {k:"lec",id:"l1",titulo:"Patrón oro: capital barato y deflación",clase:false,
+  esencia:"Con el tipo de cambio fijo al oro, la cantidad de dinero depende de las reservas de oro. Un país con déficit pierde oro, su oferta monetaria cae y sus precios bajan. El ajuste externo es deflacionario.",
+  porque:"La deflación sube el valor real de las deudas fijadas en dinero: el deudor paga con dólares que compran más. Por eso el oro favorece a los acreedores y perjudica a los deudores (deflación de deudas de Fisher).",
+  formula:"Carga real de la deuda = D / P  →  si P cae 10% con D fijo, la carga sube 1/0,9 − 1 ≈ 11%",
+  puntos:["El oro funcionó como “sello de aprobación”: los países adheridos pagaban spreads menores sobre las tasas de Londres.","Activos externos mundiales: ≈ 7% del PIB mundial en 1879 y cerca de 20% en 1900–1914.","El capital británico financió canales, caminos y ferrocarriles de EE. UU.: “financiamiento para el desarrollo” desde países superavitarios hacia emergentes.","Para defender la paridad hay que subir tasas aunque la economía esté en recesión (1891–1897)."],
+  fuente:"<b>No está en las láminas de clase.</b> Caso pp. 3–4; Guía 2.3, T6 (Hume) y T8 (Fisher), ambos complementos.",
+  metodo:["Identifica el régimen: tipo de cambio fijo o flotante, y si el capital se mueve libremente.","Pregunta qué variable hace el ajuste. Con oro no ajusta el tipo de cambio: ajustan el dinero y los precios.","Sigue la cadena: precios → valor real de las deudas → quién gana y quién pierde.","Conecta con la política: ¿puede el banco central bajar tasas sin perder reservas?"],
+  apl:{texto:"Guía 2.3: EE. UU. adhiere al oro en 1879. Los “populistas” (agricultores del Oeste y del Sur) piden un patrón plata; los banqueros del Este ganan con el oro. Entre 1891 y 1897 el Tesoro sube fuertemente las tasas para frenar ventas especulativas de dólares, y llega una recesión dura.",origen:"Datos del caso transcritos en tu guía, no de la clase.",aviso:"En el examen pueden preguntar por otro episodio con la misma lógica (por ejemplo 1931) o pedir el efecto de otra caída de precios."}},
+ {k:"q",id:"q1",tipo:"L",tema:"Patrón oro y flujos de capital",
+  enun:"Según el caso, ¿qué papel cumplió el patrón oro (1870–1914) en el financiamiento externo de EE. UU.?",
+  op:["Obligó a EE. UU. a mantener superávits en cuenta corriente para acumular oro.","Prohibió los flujos de capital de largo plazo para proteger las reservas de Londres.","Actuó como “sello de aprobación” que reducía los spreads y facilitaba que capital europeo, sobre todo británico, financiara obras como ferrocarriles en EE. UU.","Convirtió a EE. UU. en el principal acreedor del mundo, que financiaba la industrialización británica."],
+  ok:2,pista:"Piensa en la dirección del “financiamiento para el desarrollo” en el siglo XIX: ¿iba de países ya industrializados a emergentes o al revés?",
+  exp:"El caso dice que el oro fomentó una alta movilidad de capital y funcionó como “sello de aprobación”: los países adheridos pagaban spreads menores en Londres. El capital iba de Europa occidental, con superávit, hacia emergentes como EE. UU., que tenía déficit. (A) es falsa porque EE. UU. tenía déficits; (D) invierte la dirección, porque EE. UU. era deudor.",
+  estudiar:"Caso pp. 3–4 · Guía 2.3"},
+ {k:"q",id:"q2",tipo:"T",tema:"Deflación de deudas (Fisher)",
+  enun:"¿Por qué los agricultores del Oeste y del Sur de EE. UU. se oponían al patrón oro a fines del siglo XIX?",
+  op:["Porque las deflaciones periódicas aumentaban el valor real de sus deudas, en beneficio de los banqueros acreedores del Este.","Porque el oro generaba inflación que encarecía sus insumos agrícolas.","Porque el patrón oro les impedía exportar granos a Europa.","Porque un patrón plata los habría obligado a pagar sus deudas en oro."],
+  ok:0,pista:"¿Qué le pasa a una deuda fija en dólares cuando baja el nivel de precios?",
+  exp:"El caso (p. 3) dice que fijar el dólar al oro causó deflaciones intermitentes que aumentaron el valor real de los pagos de préstamos. Ganaban los banqueros del Este y perdían los deudores del Oeste y del Sur. Es la lógica de Fisher: D/P sube cuando P cae. (B) describe lo contrario, porque hubo deflación y no inflación.",
+  estudiar:"Caso p. 3 · Guía T8 (complemento)"},
+
+ {k:"lec",id:"l2",titulo:"Trilema: tipo fijo y capital libre, sin política monetaria propia",clase:false,
+  esencia:"Una economía no puede tener a la vez tipo de cambio fijo, libre movilidad de capital y política monetaria autónoma. Debe renunciar a una de las tres.",
+  porque:"Con capital móvil, si la tasa local cae bajo la externa, el capital sale y la paridad se pierde. Para defender la paridad, la tasa local tiene que seguir a la externa, aunque la economía necesite lo contrario.",
+  formula:"Movilidad perfecta + paridad creíble  →  i = i*   (sin espacio para una tasa propia)",
+  puntos:["Oro 1891–1897 y 1931: se suben tasas en plena recesión para defender la paridad.","Bretton Woods eligió tipo fijo y autonomía, con controles de capital.","Desde 1973 EE. UU. flota: tiene autonomía monetaria y capital libre."],
+  fuente:"<b>No está en las láminas de clase.</b> Caso p. 4; Guía 2.4 y T7 (complemento; el caso no usa la palabra “trilema”).",
+  metodo:["Marca qué dos vértices del trilema eligió el país.","El tercer vértice es el sacrificado.","Ante un shock, predice qué instrumento no puede usarse.","Verifica la predicción con lo que hizo el banco central en el episodio."],
+  apl:{texto:"Guía 2.4: en 1925 se crea un nuevo patrón oro y el Reino Unido fija la libra a la paridad de preguerra (sobrevaluada). La Fed baja tasas para frenar la salida de oro británico, y el crédito abundante alimenta el auge bursátil. En 1931, tras la salida británica del oro, la Fed sube tasas para defender sus reservas. Siguen quiebras bancarias en 1931–1932 y EE. UU. abandona el oro en 1933.",origen:"Datos del caso en tu guía, no de la clase.",aviso:"El examen puede cambiar el país o el año; el método es el mismo: ¿qué vértice se sacrificó?"}},
+ {k:"q",id:"q3",tipo:"T",tema:"Trilema en 1931",
+  enun:"En 1931, en plena depresión, la Reserva Federal subió las tasas de interés. Según la lógica del trilema, ¿por qué?",
+  op:["Porque quería frenar una inflación alta causada por el gasto de guerra.","Porque Bretton Woods la obligaba a mantener la paridad del dólar con la libra.","Porque los controles de capital le impedían hacer operaciones de mercado abierto.","Porque con tipo de cambio fijo al oro y capital móvil debía defender sus reservas tras la salida británica del oro, y sacrificó la política monetaria contracíclica."],
+  ok:3,pista:"Identifica qué dos vértices del trilema mantenía EE. UU. en 1931. ¿Cuál quedó sacrificado?",
+  exp:"EE. UU. mantenía tipo fijo (oro) y capital móvil, así que perdía la autonomía monetaria. Tras la salida de la libra del oro, la Fed subió tasas para defender su oro, y el caso dice que la política más estricta contribuyó a las quiebras bancarias de 1931–1932. (B) es anacrónica: Bretton Woods es de 1944. (A) no calza: había deflación.",
+  estudiar:"Caso p. 4 · Guía 2.4 y T7"},
+
+ {k:"lec",id:"l3",titulo:"Bretton Woods y el dilema de Triffin",clase:false,
+  esencia:"En Bretton Woods el dólar era convertible en oro a US$ 35 por onza para los bancos centrales, y las demás monedas se fijaban al dólar. Las paridades se podían ajustar ante un “desequilibrio fundamental” y se permitían controles de capital.",
+  porque:"El mundo necesita dólares para comerciar y acumular reservas. Para darlos, EE. UU. debe emitir pasivos, es decir, tener déficits de pagos. Pero cuantos más dólares hay frente al mismo oro, menos creíble es la convertibilidad. Esa tensión es el dilema de Triffin.",
+  formula:"Indicador de confianza = pasivos oficiales en dólares / oro monetario de EE. UU.  →  si es > 1, una corrida no se puede atender",
+  puntos:["Años 50: “escasez de dólares” y superávits de EE. UU.","1964: los pasivos superan el stock de oro monetario.","1968: patrón dólar de facto.","Desde 1965: gasto social y Vietnam recalientan la economía; inflación.","1971: primer déficit comercial desde 1893; Nixon cierra la ventanilla del oro. 1973: flotación."],
+  fuente:"<b>No está en las láminas de clase.</b> Caso pp. 4–6; Guía 2.5 y T10 (complemento; el caso describe el problema pero no usa el nombre “Triffin”).",
+  metodo:["Compara los pasivos en dólares con las reservas que los respaldan.","Si los pasivos superan las reservas, cada tenedor quiere convertir primero: riesgo de corrida.","Pregunta qué alternativas tenía el emisor: subir tasas (costo interno) o suspender la convertibilidad.","Agrega el contexto político (año electoral, proteccionismo)."],
+  apl:{texto:"Guía 2.5: en 1971 la balanza comercial es negativa por primera vez desde 1893. Los inversionistas huyen del dólar, algunos países piden oro y el Reino Unido anuncia que convertirá. Nixon, reacio a subir tasas en año electoral, suspende la convertibilidad. En 1973 las monedas pasan a flotar.",origen:"Datos del caso en tu guía, no de la clase.",aviso:"Pueden preguntarte el año en que los pasivos superaron al oro (1964) o el orden de los hechos."}},
+ {k:"q",id:"q4",tipo:"L",tema:"Cierre de la ventanilla del oro (1971)",
+  enun:"¿Qué combinación de hechos llevó a Nixon a “cerrar la ventanilla del oro” en 1971?",
+  op:["Una hiperinflación de 20% y la caída del dólar tras el Acuerdo del Plaza.","El primer déficit comercial desde 1893, la huida de inversionistas del dólar y pedidos de conversión a oro (incluido el anuncio británico), con un gobierno reacio a subir tasas en año electoral.","La salida de Francia del FMI y el colapso del patrón cambio-oro de 1925.","La crisis del petróleo de 1973, que dejó a EE. UU. sin reservas de oro."],
+  ok:1,pista:"Ordena las fechas: el Plaza es de 1985 y la crisis del petróleo de 1973. ¿Qué pasó en 1971 con la balanza comercial?",
+  exp:"El caso (p. 5) enumera esos hechos: balanza comercial negativa por primera vez desde 1893, retornos bajos y temor a una devaluación, pedidos de conversión a oro y el anuncio británico. Nixon no quiso subir tasas en año electoral y suspendió la convertibilidad. Las demás opciones mezclan episodios de otros años.",
+  estudiar:"Caso p. 5 · Guía 2.5"},
+ {k:"q",id:"q5",tipo:"T",tema:"Dilema de Triffin",
+  enun:"Hacia 1964 los pasivos oficiales en dólares superaron el oro monetario de EE. UU. ¿Qué concepto describe esa tensión?",
+  op:["La paradoja de Lucas: el capital fluía de países pobres a ricos.","El dilema de Triffin: para dar liquidez al mundo, el emisor de la moneda de reserva acumula pasivos que erosionan la confianza en su convertibilidad.","La condición de Marshall–Lerner: la devaluación no mejoraba la balanza.","El enfoque de absorción: el gasto interno superaba al producto."],
+  ok:1,pista:"El problema no era el comercio sino la relación entre los dólares en manos de bancos centrales extranjeros y el oro disponible.",
+  exp:"Es el dilema de Triffin. El caso (p. 5) describe el mecanismo: el equilibrio externo se mantenía con bancos centrales extranjeros que acumulaban derechos líquidos sobre EE. UU., y crecía el riesgo de una corrida sobre el oro. El nombre “Triffin” no aparece en el caso ni en las láminas; es teoría complementaria de tu guía.",
+  estudiar:"Caso p. 5 · Guía T10 (complemento)"},
+
+ {k:"lec",id:"l4",titulo:"Ahorro, inversión y déficits gemelos",clase:"parcial",
+  esencia:"La cuenta corriente es la diferencia entre el ahorro nacional y la inversión. Si separamos al sector privado del gobierno, queda una brecha privada y una brecha fiscal.",
+  porque:"Si un país invierte más de lo que ahorra, el resto del mundo financia la diferencia, y eso es un déficit en cuenta corriente. Un déficit fiscal reduce el ahorro nacional; si los privados no ahorran más para compensar, aparece un déficit externo “gemelo”.",
+  formula:"CC = S − I = (S_p − I) + (T − G)",
+  puntos:["1980–1986: la CC pasa de +0,1% a −3,3% del PIB y el déficit fiscal de 2,8% a 4,8%: los déficits gemelos.","Fines de los 90 se separan: superávit fiscal de 3% (2000), pero la brecha privada se abre más.","No son mecánicos: dependen de S_p − I. Con equivalencia ricardiana, los privados ahorran el recorte de impuestos y no hay gemelo.","La clase define CC por sus componentes (lámina 7); la identidad S − I viene del caso y de tu guía."],
+  fuente:"<b>Clase Desbalances globales, lámina 7</b> (CC = BC + ingresos + transferencias). La identidad CA = S − I está en la <b>lectura del Módulo 3</b> (USW 2022, cap. 2; Resumen §2.4; ver lección 19). Caso p. 6; Guía T2.",
+  metodo:["Escribe la identidad CC = (S_p − I) + (T − G).","Calcula la brecha privada S_p − I.","Calcula el saldo fiscal T − G (un déficit es negativo).","Suma: el signo indica déficit o superávit.","Para explicar un cambio, mira qué término se movió más."],
+  apl:{texto:"Ejercicio con tu guía (2.6 y 2.7). Años 80: déficit fiscal de 2,8% a 4,8% del PIB y CC de +0,1% a −3,3%. Fines de los 90: el saldo fiscal pasa de −5% (1992) a +3% (2000), pero la inversión empresarial sube de 5,5% a 8,6% del PIB y el ahorro de los hogares cae de 6,5% a menos de 1% del PIB. La brecha privada domina.",origen:"Cifras del caso transcritas en tu guía, no de la clase.",aviso:"En el examen los porcentajes pueden cambiar; aplica la identidad con los que te den."}},
+ {k:"q",id:"q6",tipo:"EN",tema:"Identidad CC = (S_p − I) + (T − G)",
+  enun:"Una economía tiene ahorro privado de 18% del PIB, inversión de 21% del PIB y un déficit fiscal de 2% del PIB. ¿Cuál es su cuenta corriente?",
+  op:["+1% del PIB","−1% del PIB","−3% del PIB","−5% del PIB"],
+  ok:3,pista:"Suma dos brechas: la privada (S_p − I) y la fiscal (T − G). Un déficit fiscal entra con signo negativo.",
+  exp:"(18 − 21) + (−2) = −3 − 2 = −5% del PIB. (C) olvida la brecha fiscal. (B) suma el déficit fiscal como si fuera positivo.",
+  estudiar:"Guía T2 · Caso p. 6 · Clase Desbalances globales lám. 7"},
+ {k:"q",id:"q7",tipo:"L",tema:"Separación de los gemelos (fines de los 90)",
+  enun:"A fines de los 90 el gobierno pasó a superávit (≈ 3% del PIB en 2000), pero el déficit en cuenta corriente se amplió. ¿Qué lo explica según el caso?",
+  op:["La brecha privada: la inversión empresarial subió de 5,5% a 8,6% del PIB y el ahorro de los hogares cayó de 6,5% a menos de 1% del PIB.","El alza del petróleo, que triplicó la factura de importaciones.","La venta masiva de activos de EE. UU. por bancos centrales asiáticos.","Una devaluación del dólar frente al euro, que encareció las importaciones."],
+  ok:0,pista:"Usa la identidad: si T − G subió, ¿qué término tuvo que caer aún más para que la CC empeorara?",
+  exp:"Si T − G sube y la CC empeora, la brecha privada S_p − I tuvo que caer más. El caso (p. 6) lo atribuye a la “nueva economía”: auge de inversión en tecnología y ahorro de hogares en mínimos por el efecto riqueza bursátil. El petróleo subió de US$ 68 mm a US$ 104 mm entre 1999 y 2002, no se triplicó y es posterior; y el dólar se fortaleció, no se devaluó.",
+  estudiar:"Caso p. 6 · Guía 2.7 y T2"},
+
+ {k:"lec",id:"l5",titulo:"Plaza 1985: tipo de cambio real y curva J",clase:false,
+  esencia:"Una depreciación real abarata las exportaciones y encarece las importaciones. Mejora la balanza comercial si las cantidades responden lo suficiente.",
+  porque:"En el corto plazo los volúmenes están fijados por contratos, así que la depreciación primero encarece lo que ya se importa y la balanza empeora. Cuando las cantidades reaccionan, la balanza mejora. Ese perfil es la curva J.",
+  formula:"q = e·P*/P     Marshall–Lerner (desde comercio equilibrado): η_X + η_M > 1",
+  puntos:["Acuerdo del Plaza, septiembre de 1985: el G5 (EE. UU., Francia, Alemania Occidental, Japón y Reino Unido) interviene para depreciar el dólar.","El dólar ponderado por comercio cae 40% en dos años; en febrero de 1987 el Acuerdo del Louvre (G6) busca frenar la caída.","CC: −3,3% (1986), −3,4% (1987) y −1,8% del PIB (1989). Nunca llega a superávit.","El caso también atribuye la mejora al mayor crecimiento del resto del mundo, por comercio y por ingresos."],
+  fuente:"<b>No está en las láminas de clase.</b> Caso p. 6; Guía 2.6 y T12 (complemento). La curva J es una interpretación; el caso no la nombra.",
+  metodo:["Verifica la dirección: una depreciación sube q.","Revisa si se cumple Marshall–Lerner.","Mira el rezago: si la balanza empeora antes de mejorar, es una curva J.","Considera otros factores, como el crecimiento externo."],
+  apl:{texto:"Ejercicio con tu guía (2.6): después del Plaza la CC pasa de −3,3% (1986) a −3,4% (1987) y recién mejora a −1,8% en 1989. En 1986 la PIIN se vuelve negativa (a precios de mercado, según el texto; la nota 51 sugiere 1989: inconsistencia del caso).",origen:"Cifras del caso transcritas en tu guía, no de la clase.",aviso:"Te pueden dar otra secuencia de saldos y pedirte que reconozcas la curva J."}},
+ {k:"q",id:"q8",tipo:"L",tema:"Plaza y curva J",
+  enun:"Tras el Acuerdo del Plaza (1985) el dólar cayó 40% en dos años. ¿Qué perfil de la cuenta corriente describe el caso y cómo se interpreta?",
+  op:["Mejora inmediata a superávit en 1986, prueba de que Marshall–Lerner se cumple sin rezago.","Empeoramiento permanente, prueba de que Marshall–Lerner no se cumple.","Empeoró hasta −3,4% del PIB en 1987 y recién mejoró a −1,8% en 1989, sin llegar a superávit: un perfil compatible con una curva J, ayudado por el mayor crecimiento del resto del mundo.","Se mantuvo constante, porque el Acuerdo del Louvre anuló la devaluación."],
+  ok:2,pista:"Revisa las cifras de 1986, 1987 y 1989. ¿La mejora fue inmediata o llegó con rezago?",
+  exp:"El caso (p. 6) da −3,3% en 1986, −3,4% en 1987 y −1,8% en 1989, y dice que la mejora no alcanzó para llegar a superávit. Primero empeora y después mejora: es compatible con una curva J. El Louvre buscó frenar la caída del dólar, no anularla.",
+  estudiar:"Caso p. 6 · Guía 2.6 y T12"},
+
+ {k:"lec",id:"l6",titulo:"Exceso de ahorro mundial y la llegada del euro",clase:false,
+  esencia:"Si el resto del mundo quiere ahorrar más de lo que invierte, ese ahorro busca destino. EE. UU. lo absorbe con un déficit en cuenta corriente. En esta lectura la causa del déficit está fuera de EE. UU.",
+  porque:"Bernanke: en economías avanzadas fuera de EE. UU., las poblaciones envejecidas necesitan ahorrar para jubilar, y con fuerzas laborales estancadas hay pocas oportunidades de inversión interna. EE. UU. ofrecía retornos altos (la “nueva economía”).",
+  formula:"Σ CC mundial = 0  →  CC_EEUU = −CC_resto = −(S* − I*)",
+  puntos:["Activos de EE. UU. en carteras extranjeras: 35% en 1999; acciones de EE. UU.: 51% de las carteras accionarias extranjeras.","PIIN: de −US$ 432 mm (1992) a −US$ 2.411 mm (2002), de −6% a −19% del PIB según el texto (el Anexo 6 da −7% y −22%).","Euro 1999: Mundell advierte que la deuda acumulada haría insostenible depender del dólar.","“Contra lo previsto”, el dólar se fortaleció varios años y el déficit siguió creciendo."],
+  fuente:"<b>No está en las láminas de clase, pero sí en la lectura del Módulo 3:</b> USW (2022), cap. 7, §5.5 del resumen (ver lección 22). Caso p. 7; Guía 2.7 y T20.",
+  metodo:["Decide si la explicación es de empuje externo (S* > I*) o de atracción interna (S < I en EE. UU.).","Busca evidencia en las tasas: un exceso de ahorro mundial baja las tasas; un exceso de gasto de EE. UU. las sube.","Contrasta con lo que pasó con el dólar y la CC."],
+  apl:{texto:"Ejercicio con tu guía (2.7): la PIIN pasa de −US$ 432 mm a −US$ 2.411 mm entre 1992 y 2002. Atención: el texto dice −6% y −19% del PIB, pero el Anexo 6 da −7% y −22%. Es una inconsistencia del caso; en el examen usa la cifra de la fuente que te citen.",origen:"Cifras del caso en tu guía, no de la clase.",aviso:"Pueden preguntarte qué predijo Mundell o qué pasó en realidad."}},
+ {k:"q",id:"q9",tipo:"L",tema:"Euro y la advertencia de Mundell",
+  enun:"Al crearse el euro (1999), Robert Mundell advirtió que la deuda externa acumulada haría insostenible depender del dólar. ¿Qué pasó en los años siguientes, según el caso?",
+  op:["El euro desplazó al dólar como principal moneda de reserva antes de 2005.","EE. UU. tuvo que subir sus tasas a 20% para retener capital.","El déficit se cerró porque Europa dejó de comprar activos de EE. UU.","Contra lo previsto, el dólar se fortaleció varios años y el déficit en cuenta corriente siguió ampliándose."],
+  ok:3,pista:"Busca la frase “contrary to predictions” en el caso (p. 7) y mira el Anexo 5.",
+  exp:"El caso (p. 7) dice que, contra lo previsto, el dólar se fortaleció varios años y el déficit siguió creciendo. El capital seguía atraído por los retornos de la nueva economía. Las tasas de 20% corresponden a la Fed de comienzos de los 80.",
+  estudiar:"Caso p. 7 · Guía 2.7"},
+ {k:"q",id:"q10",tipo:"L",tema:"Exceso de ahorro mundial (Bernanke)",
+  enun:"¿Cuál fue la causa principal del “exceso de ahorro mundial” descrito por Ben Bernanke?",
+  op:["El colapso puntocom, que obligó a los hogares de EE. UU. a ahorrar más.","Factores demográficos: economías avanzadas fuera de EE. UU., con poblaciones envejecidas y pocas oportunidades de inversión interna, ahorraban mucho, y parte de ese ahorro fue a EE. UU.","La política fiscal restrictiva de la Unión Europea tras crear el euro.","La revolución del shale, que abarató la energía en todo el mundo."],
+  ok:1,pista:"Bernanke ubica la causa fuera de EE. UU. ¿Qué rasgo de la población de otras economías avanzadas eleva su ahorro?",
+  exp:"El caso (p. 7) atribuye el exceso de ahorro a factores demográficos: fuerzas laborales estancadas, pocas oportunidades de inversión y poblaciones que envejecen y deben ahorrar para la jubilación. Parte de ese ahorro fue a EE. UU. atraído por los retornos. El shale es de la década de 2010.",
+  estudiar:"Caso p. 7 · Guía 2.7 y T20"}
+ ]},
+
+{id:"b2",nombre:"Bloque 2",titulo:"Balanza de pagos, PIIN y la paradoja",
+ desc:"Clase Desbalances globales y caso pp. 7–11. Este es el bloque con más materia de clase y más ejercicios: componentes de la cuenta corriente, valoración, materia oscura y diferenciales de retorno.",
+ items:[
+ {k:"lec",id:"l7",titulo:"Las cuentas de la cuenta corriente",clase:true,
+  esencia:"La balanza de pagos tiene tres partes: cuenta corriente, cuenta financiera y cuenta de capital (poco importante). La cuenta corriente suma tres balanzas.",
+  porque:"Cada balanza registra un tipo de ingreso: comercio de bienes y servicios, rentas de factores (intereses, dividendos, utilidades, salarios) y donaciones. En la mayoría de los países la balanza comercial domina (láminas 17–18: casi todos los puntos cerca de la línea de 45°).",
+  formula:"CC = BC + Balanza de ingresos + Transferencias netas     BC = Bienes + Servicios     Ingresos = INI + Compensación neta de empleados",
+  puntos:["EE. UU. 2020: déficit en bienes, superávit en servicios, INI positivo pese a ser deudor y transferencias negativas.","El signo de CC puede diferir del de BC: depende de ingresos y transferencias (lám. 20).","Nicaragua: CC > 0 > BC porque recibe remesas por 14% del PIB.","Argentina: CC < 0 < BC porque su balanza de ingresos es negativa (gran deudor neto)."],
+  fuente:"<b>Clase Desbalances globales, láminas 6–8, 11–14 y 19–20.</b> Guía T1.",
+  metodo:["Ubica cada partida en su balanza.","Suma bienes y servicios para obtener la BC.","Suma BC + ingresos + transferencias, respetando los signos.","Para expresarlo en % del PIB, divide por el PIB.","Compara CC con BC para deducir el signo de ingresos + transferencias."],
+  apl:{texto:"Ejercicio con los datos de la clase (lám. 13, EE. UU. 2020, mm de US$): bienes −915,6; servicios +233,9; BC −681,7; balanza de ingresos +181,6 (INI +190,9 y compensación −9,3); transferencias −147,1; CC −647,2 (−3,1% del PIB). En tu guía (Anexo 4a del caso, 2019): CC −2,2% del PIB; la lámina 19 da BC −2,7, ingresos +1,1 y transferencias −0,7.",origen:"2020 viene de la clase; 2019 viene del caso y de tu guía.",aviso:"En el examen los montos pueden ser otros; el método de suma es el mismo."}},
+ {k:"q",id:"q11",tipo:"EG",tema:"Componentes de la CC (EE. UU. 2020)",
+  enun:"Con los datos de EE. UU. 2020 (mm de US$): balanza comercial −681,7; balanza de ingresos +181,6; transferencias netas −147,1. ¿Cuál es la cuenta corriente?",
+  op:["−647,2","−1.010,4","−534,6","−637,9"],
+  ok:0,pista:"Suma las tres balanzas con su signo. Un superávit de ingresos reduce el déficit.",
+  exp:"−681,7 + 181,6 − 147,1 = −647,2 mm, ≈ −3,1% del PIB. (B) resta los ingresos en vez de sumarlos. (C) trata las transferencias como positivas. (D) usa solo el INI (190,9) y olvida la compensación de empleados (−9,3).",
+  estudiar:"Clase Desbalances globales lám. 7 y 13 · Guía T1"},
+ {k:"q",id:"q12",tipo:"EN",tema:"CC vs. balanza comercial",
+  enun:"Un país tiene superávit comercial de 3% del PIB, balanza de ingresos de −5% y transferencias netas de +0,5%. ¿Qué es correcto?",
+  op:["CC = +8,5% del PIB: el país es acreedor neto.","CC = +3%, porque solo cuenta la balanza comercial.","CC = −1,5% del PIB: tiene déficit en cuenta corriente pese al superávit comercial, porque paga rentas netas al exterior.","CC = −1,5% del PIB, lo que prueba que su PIIN es positiva."],
+  ok:2,pista:"Aplica CC = BC + ingresos + transferencias. Luego piensa qué indica una balanza de ingresos muy negativa.",
+  exp:"3 − 5 + 0,5 = −1,5% del PIB. El déficit viene de las rentas pagadas al exterior, típico de un deudor neto o de un país con mucha inversión extranjera, como Argentina en la lámina 20 (CC < 0 < BC). (D) se equivoca: pagar rentas netas sugiere PIIN negativa.",
+  estudiar:"Clase Desbalances globales lám. 19–20"},
+
+ {k:"lec",id:"l8",titulo:"PIIN: el stock que acumula la cuenta corriente",clase:true,
+  esencia:"La posición de inversión internacional neta es activos menos pasivos externos. La cuenta corriente es un flujo; la PIIN es un stock. La clase usa la imagen de un tanque de agua (lám. 29).",
+  porque:"Un déficit se financia vendiendo activos o emitiendo pasivos, así que reduce la PIIN. Pero la PIIN también cambia cuando cambian los precios de los activos o el tipo de cambio: son los cambios por valoración.",
+  formula:"PIIN = A − L     ΔPIIN = CC + Δ por valoración     →     Valoración = ΔPIIN − CC",
+  puntos:["Fin de 2020: PIIN de EE. UU. de −US$ 14,1 billones, −67% del PIB (lám. 28).","No todo año con CC negativa es un año en que la PIIN cae (lám. 30).","Valoración positiva = ganancia de riqueza; negativa = pérdida."],
+  fuente:"<b>Clase Desbalances globales, láminas 26–31.</b> Guía T3; Anexo 9a del caso.",
+  metodo:["Calcula ΔPIIN = PIIN final − PIIN inicial.","Despeja la valoración: ΔPIIN − CC (si la CC es negativa, restarla suma).","Interpreta el signo: ganancia o pérdida.","Busca la causa: tipo de cambio o precios de acciones."],
+  apl:{texto:"Ejercicio con tu guía (Anexo 9a, mm de US$). 2017: PIIN de −8.129 a −7.622 (ΔPIIN +507), CC −365, valoración +872. 2018: ΔPIIN −2.052, CC −450, valoración −1.603. 2008: ΔPIIN −2.716, CC −697, valoración −2.019.",origen:"Datos del caso (Anexo 9a) en tu guía; la fórmula es de la clase.",aviso:"En el examen te pueden dar otro año o valores inventados."}},
+ {k:"q",id:"q13",tipo:"EG",tema:"Valoración = ΔPIIN − CC",
+  enun:"Anexo 9a, 2017: la PIIN pasó de −8.129 a −7.622 mm de US$ y la cuenta corriente fue −365 mm. ¿Cuánto fue el efecto de valoración?",
+  op:["+142","+872","−872","+507"],
+  ok:1,pista:"Primero calcula ΔPIIN. Después despeja: valoración = ΔPIIN − CC, y recuerda que la CC es negativa.",
+  exp:"ΔPIIN = −7.622 − (−8.129) = +507. Valoración = 507 − (−365) = +872 mm: el dólar se depreció en 2017 y subió el valor en dólares de los activos de EE. UU. en el exterior. (A) suma la CC en vez de restarla. (D) confunde ΔPIIN con valoración.",
+  estudiar:"Clase Desbalances globales lám. 31 · Guía T3 y Anexo 9a"},
+ {k:"q",id:"q14",tipo:"EN",tema:"Valoración con valores nuevos",
+  enun:"Un país empieza el año con PIIN de −3.000 y lo termina con −3.500. Su cuenta corriente fue −200. ¿Qué ocurrió?",
+  op:["Ganancia de valoración de +300.","Ganancia de valoración de +700.","Pérdida de valoración de −700.","Pérdida de valoración de −300: la PIIN cayó más que el déficit."],
+  ok:3,pista:"ΔPIIN es −500. ¿Cuánto de esa caída explica la cuenta corriente y cuánto queda?",
+  exp:"ΔPIIN = −500. Valoración = −500 − (−200) = −300. La CC explica −200 y la valoración el resto. (C) resta mal el signo de la CC.",
+  estudiar:"Clase Desbalances globales lám. 31 · Guía T3"},
+
+ {k:"lec",id:"l9",titulo:"Valoración por tipo de cambio",clase:true,
+  esencia:"Si los activos externos están en moneda extranjera y los pasivos en moneda propia, una depreciación de la moneda propia sube el valor de los activos medidos en moneda propia y deja igual a los pasivos: la PIIN mejora.",
+  porque:"EE. UU. tiene sus activos mayormente en moneda extranjera (acciones, IED) y sus pasivos mayormente en dólares. Un dólar débil le transfiere riqueza desde el resto del mundo. Cuanto más grandes las posiciones brutas, mayor el efecto (lám. 40).",
+  formula:"A($) = unidades × precio(€) × E($/€)     L($) fijo     ΔPIIN_val = A($)_nuevo − A($)_antes",
+  puntos:["Ejemplo de la clase (lám. 32): 25 acciones de Fiat a €2 con $2/€ dan A = $100; L = $80; PIIN = +20. Si el euro cae a $1/€, A = $50 y la PIIN = −30.","PIIN hipotética sin valoración (lám. 38–39): en 2007 habría sido −46% del PIB y no el −9% real.","Caso p. 8: entre 2001 y 2012 la CC sumó −US$ 7,1 billones, pero la PIIN cayó solo US$ 2,6 billones.","Caso p. 11: una depreciación adicional de 10% equivaldría a una transferencia de ≈ 5% del PIB hacia EE. UU."],
+  fuente:"<b>Clase Desbalances globales, láminas 30–32 y 37–40.</b> Caso pp. 8 y 11; Guía T3.",
+  metodo:["Valora los activos en moneda propia: unidades × precio × tipo de cambio.","Deja fijos los pasivos en moneda propia.","Recalcula la PIIN antes y después.","La diferencia es el efecto de valoración."],
+  apl:{texto:"Ejercicio con tu guía (Caso p. 8): CC acumulada 2001–2012 de −7,1 billones y ΔPIIN de −2,6 billones. Valoración ≈ −2,6 − (−7,1) = +4,5 billones (cálculo propio). Gran parte de los activos de EE. UU. estaba en Europa, y el dólar cayó 54% frente al euro y 36% frente a la libra hasta diciembre de 2004.",origen:"Cifras del caso; el cálculo de +4,5 es propio. El ejemplo de Fiat es de la clase.",aviso:"Te pueden cambiar las cantidades, los precios o el tipo de cambio del ejemplo."}},
+ {k:"q",id:"q15",tipo:"EN",tema:"Valoración cambiaria (ejemplo tipo Fiat)",
+  enun:"Un país tiene activos por 40 acciones europeas a €3 cada una, con tipo de cambio $1,5/€, y pasivos por $150 en bonos en dólares. Si el euro cae a $1,0/€, ¿cómo cambia la PIIN?",
+  op:["De +30 a −30.","No cambia: el tipo de cambio no afecta la PIIN.","De −30 a +30.","De +30 a −90."],
+  ok:0,pista:"Valora los activos en dólares: unidades × precio en euros × dólares por euro. Los pasivos en dólares no cambian.",
+  exp:"Antes: A = 40 × 3 × 1,5 = $180; PIIN = 180 − 150 = +30. Después: A = 40 × 3 × 1,0 = $120; PIIN = 120 − 150 = −30. El país pasa de acreedor a deudor solo por el tipo de cambio, igual que en la lámina 32.",
+  estudiar:"Clase Desbalances globales lám. 32 · Guía T3"},
+ {k:"q",id:"q16",tipo:"EG",tema:"Valoración 2001–2012",
+  enun:"Entre 2001 y 2012 los déficits en cuenta corriente sumaron US$ 7,1 billones, pero la PIIN empeoró solo US$ 2,6 billones. ¿Qué explica la diferencia según el caso?",
+  op:["Errores de medición del BEA, que luego se corrigieron con la materia oscura.","La compra de reservas en dólares por bancos centrales asiáticos, que redujo los pasivos.","Ganancias de valoración de ≈ US$ 4,5 billones: el dólar cayó frente a monedas europeas y gran parte de los activos de EE. UU. estaba en Europa.","Transferencias unilaterales positivas recibidas por EE. UU."],
+  ok:2,pista:"ΔPIIN = CC + valoración. Calcula cuánto “falta” y piensa en qué pasó con el dólar frente al euro.",
+  exp:"Valoración = −2,6 − (−7,1) = +4,5 billones. El caso (p. 8) lo atribuye a la caída del dólar frente a las monedas europeas, que subió el valor en dólares de los activos de EE. UU. en Europa. (B) es falsa: las compras asiáticas aumentan los pasivos de EE. UU., no los reducen. Las transferencias de EE. UU. son negativas.",
+  estudiar:"Caso p. 8 · Clase Desbalances globales lám. 31 y 37–39 · Guía T3"},
+
+ {k:"lec",id:"l10",titulo:"La paradoja PIIN–INI y la materia oscura",clase:true,
+  esencia:"EE. UU. es el mayor deudor externo del mundo, pero recibe ingreso neto por inversión positivo (INI > 0). Primera hipótesis: la PIIN verdadera es positiva y el BEA no mide capital intangible, la “materia oscura”.",
+  porque:"Si el ingreso es el retorno de un stock, se puede inferir el stock “verdadero” capitalizando el ingreso a una tasa r.",
+  formula:"PIIN_V = INI / r     Materia oscura = PIIN_V − PIIN observada",
+  puntos:["Hausmann y Sturzenegger: know-how de la IED, servicios de liquidez (dólares en efectivo en el exterior) y venta de “seguros” (caso p. 8).","Clase 2020: INI = 0,1909 billones, r = 5% → PIIN_V = 3,8; PIIN observada −11,1 → materia oscura de 14,9 billones (lám. 45).","Conclusión de la clase: 14,9 billones “parece demasiado grande para pasar desapercibida” (lám. 46).","Buiter: solo ≈ 0,5 de los 3 billones de materia oscura serían válidos (señoreaje): “fusión fría” (caso pp. 10–11). El BEA 2016 da una PIIN aún peor: −45% del PIB."],
+  fuente:"<b>Clase Desbalances globales, láminas 43–46</b> (numeración impresa en la lámina). Caso pp. 8 y 10–11; Guía T5.",
+  metodo:["Toma el INI (flujo anual) y la tasa r.","Capitaliza: PIIN_V = INI / r. Cuida las unidades (mm o billones).","Resta la PIIN observada; si es negativa, restarla suma.","Evalúa si la cifra es plausible frente al tamaño de la economía."],
+  apl:{texto:"Ejercicio con tu guía (T5, datos 2019 de los Anexos 4a y 6): INI = 1.129 − 881 = 248 mm; PIIN = −11,05 billones; con r = 5%, PIIN_V = 0,248 / 0,05 = 4,96 billones y la materia oscura ≈ 4,96 − (−11,05) ≈ 16,0 billones (cálculo propio).",origen:"Los datos 2019 salen del caso y de tu guía. La clase usa 2020 y obtiene 14,9.",aviso:"El examen puede usar los datos de la clase (2020), los de la guía (2019) u otros, y otra r."}},
+ {k:"q",id:"q17",tipo:"EG",tema:"Materia oscura (datos 2019)",
+  enun:"Con los datos de tu guía para 2019: INI = US$ 248 mm, r = 5% y PIIN observada = −US$ 11,05 billones. ¿Cuánta materia oscura implica la hipótesis de Hausmann y Sturzenegger?",
+  op:["US$ 4,96 billones","US$ 6,09 billones","US$ 0,5 billones","US$ 16,0 billones"],
+  ok:3,pista:"Primero capitaliza: INI / r (248 mm = 0,248 billones). Después resta la PIIN observada, que es negativa.",
+  exp:"PIIN_V = 0,248 / 0,05 = 4,96 billones. Materia oscura = 4,96 − (−11,05) ≈ 16,0 billones. (A) es solo la PIIN verdadera. (B) suma 4,96 + (−11,05) en valor absoluto. (C) es la cifra que Buiter acepta como válida.",
+  estudiar:"Clase Desbalances globales lám. 45 · Guía T5"},
+ {k:"q",id:"q18",tipo:"EN",tema:"Materia oscura con valores nuevos",
+  enun:"INI = US$ 0,12 billones, r = 4% y PIIN observada = −US$ 8 billones. ¿Cuánta materia oscura implica la hipótesis?",
+  op:["US$ 3 billones","US$ 11 billones","−US$ 5 billones","US$ 8,12 billones"],
+  ok:1,pista:"PIIN_V = INI / r. Luego materia oscura = PIIN_V − PIIN observada.",
+  exp:"PIIN_V = 0,12 / 0,04 = 3 billones. Materia oscura = 3 − (−8) = 11 billones. (C) suma la PIIN negativa en vez de restarla. (A) se queda en la PIIN verdadera.",
+  estudiar:"Clase Desbalances globales lám. 45 · Guía T5"},
+
+ {k:"lec",id:"l11",titulo:"Diferenciales de retorno y el fin de la paradoja",clase:true,
+  esencia:"Segunda hipótesis: los activos de EE. UU. (sobre todo IED y acciones, riesgosos) rinden más que sus pasivos (sobre todo deuda segura, como los bonos del Tesoro). Aunque A < L, el INI puede ser positivo si la diferencia de retornos es suficiente.",
+  porque:"EE. UU. funciona como un banco o “capitalista de riesgo” mundial: se endeuda seguro y barato e invierte en activos riesgosos que rinden más.",
+  formula:"INI = r_A·A − r_L·L     →     r_A = (INI + r_L·L) / A     INI > 0 con A < L exige r_A / r_L > L / A",
+  puntos:["Clase 2020: A = 32,2; L = 46,3; INI = 0,1909 billones; r_L = 0,37% → r_A = 1,12%: diferencial de 0,75 pp, “no parece exagerado” (lám. 47).","Si los pasivos incluyen acciones (r_L = ½(r_A + 0,37%)), r_A = 3,06% y la prima de acciones sobre bonos es 2,69% (lám. 48).","China muestra la paradoja invertida: PIIN positiva e INI negativo (−0,3% del PIB en 2019) (lám. 49–51).","Actualización de tu informe: desde ≈ 2024 el ingreso primario neto de EE. UU. es negativo (revisión del BEA de junio de 2026)."],
+  fuente:"<b>Clase Desbalances globales, láminas 47–51</b> (numeración impresa). Caso pp. 8 y 10–11; Guía T5; Informe 2020–2026.",
+  metodo:["Calcula los retornos implícitos: r_A = ingresos recibidos / A y r_L = pagos / L.","Diferencial = r_A − r_L.","Comprueba INI = r_A·A − r_L·L.","Revisa la condición r_A / r_L > L / A."],
+  apl:{texto:"Ejercicio con tu guía (T5, 2019): r_A = 1.129 / 29.153 = 3,87%; r_L = 881 / 40.203 = 2,19%; diferencial ≈ 1,7 pp. r_A / r_L = 1,77 > L / A = 1,38, así que el INI es positivo (248 mm).",origen:"Datos 2019 del caso en tu guía (cálculo propio). La clase hace el cálculo con 2020 y obtiene 0,75 pp.",aviso:"No mezcles: 0,75 pp es el resultado de la clase (2020, con r_L supuesto); 1,7 pp es el de tu guía (2019, con retornos observados)."}},
+ {k:"q",id:"q19",tipo:"EG",tema:"Diferencial de retorno (2019)",
+  enun:"Con los datos de tu guía para 2019: ingresos recibidos de 1.129 mm sobre activos de 29.153 mm, y pagos de 881 mm sobre pasivos de 40.203 mm. ¿Cuál es el diferencial r_A − r_L?",
+  op:["≈ 1,7 puntos porcentuales (3,87% − 2,19%)","≈ 0,75 puntos porcentuales","≈ −1,7 puntos: los pasivos rinden más","≈ 0,85 puntos (248 / 29.153)"],
+  ok:0,pista:"Calcula cada retorno por separado (ingreso / stock) y resta. Ojo: 0,75 pp es el resultado de la clase para 2020.",
+  exp:"r_A = 1.129 / 29.153 = 3,87%; r_L = 881 / 40.203 = 2,19%; diferencial ≈ 1,68 pp. (B) es el cálculo de la clase con 2020 y r_L supuesto. (D) divide el INI por A, que no es un diferencial.",
+  estudiar:"Clase Desbalances globales lám. 47 · Guía T5"},
+ {k:"q",id:"q20",tipo:"L",tema:"Buiter y el fin de la paradoja",
+  enun:"Willem Buiter llamó a la materia oscura “fusión fría”. ¿Qué predijo y qué muestran los datos 2020–2026 de tu informe?",
+  op:["Predijo que la PIIN se volvería positiva; los datos lo confirmaron en 2025.","Predijo que el BEA corregiría la PIIN hasta −20% del PIB; los datos lo confirmaron.","Predijo que la paradoja se resolvería cuando el ingreso neto se volviera negativo; desde ≈ 2024 el ingreso primario neto de EE. UU. es negativo (revisión del BEA de junio de 2026).","Predijo que la materia oscura crecería; los datos muestran que hoy supera los US$ 30 billones."],
+  ok:2,pista:"Buiter solo aceptó ≈ US$ 0,5 billones (señoreaje). Si no hay riqueza oculta, ¿qué debía pasar con el ingreso a medida que la PIIN se hacía más negativa?",
+  exp:"El caso (pp. 10–11) cita a Buiter: la paradoja se resolvería simplemente con pagos netos de ingreso negativos. Tu informe muestra que el ingreso primario neto se volvió negativo hacia 2024 y que la PIIN llegó a ≈ −90% del PIB a fines de 2025. La parte de 2024–2026 sale del informe, no del caso ni de la clase.",
+  estudiar:"Caso pp. 10–11 · Guía T5 y Parte 4 · Informe de investigación"}
+ ]},
+
+{id:"b3",nombre:"Bloque 3",titulo:"El debate: aterrizaje suave o forzoso",
+ desc:"Caso pp. 7–14, más la clase Hechos estilizados. Quién financia el déficit, si es sostenible, cómo sería el ajuste y qué cambió entre 2008 y 2020.",
+ items:[
+ {k:"lec",id:"l12",titulo:"Bretton Woods II: Asia financia el déficit",clase:false,
+  esencia:"Los bancos centrales asiáticos compran dólares para que sus monedas no se aprecien. Así mantienen competitivas sus exportaciones, y EE. UU. obtiene financiamiento barato: “financiamiento del proveedor”.",
+  porque:"Para Asia, el beneficio en empleo exportador supera el costo de tener activos de bajo retorno (China debía absorber 200 millones de trabajadores agrícolas excedentes). Para EE. UU., las tasas bajas inflan el valor de los activos (vivienda) y reemplazan al ahorro.",
+  formula:"2002–2005: CC acumulada de EE. UU. ≈ −2,3 billones; reservas mundiales en dólares +1,2 billones (Asia +1,1)",
+  puntos:["Exportaciones de China a EE. UU.: de 8% (2000) a 15% del PIB chino (2006).","Summers: “equilibrio del terror financiero”. Dooley y otros: “Bretton Woods II”.","Quarles: el déficit es “nuestro regalo al mundo”, motor del crecimiento asiático.","Europa no intervino: el dólar cayó 54% frente al euro hasta diciembre de 2004."],
+  fuente:"<b>No está en las láminas de clase.</b> Caso pp. 7–9; Guía 2.8, 2.10 y T20.",
+  metodo:["Identifica el incentivo de cada parte: el prestamista y el deudor.","Pregunta quién perdería más si el arreglo se rompe.","Si ambos pierden mucho, el equilibrio se sostiene por disuasión mutua."],
+  apl:{texto:"Ejercicio con tu guía (2.8): de US$ 2,3 billones de déficits acumulados en 2002–2005, US$ 1,2 billones se financiaron con reservas oficiales en dólares (≈ 52%, cálculo propio); el resto fue inversión privada. Las tasas bajas inflaron la vivienda y la deuda de los hogares (tarjetas: US$ 9.205 promedio en 2003, +25% en cinco años).",origen:"Cifras del caso en tu guía, no de la clase.",aviso:"Te pueden pedir la proporción financiada por bancos centrales con otros montos."}},
+ {k:"q",id:"q21",tipo:"L",tema:"Reservas asiáticas",
+  enun:"¿Por qué los bancos centrales asiáticos acumularon reservas en dólares a principios de los 2000?",
+  op:["Para preparar la adopción del dólar como moneda oficial.","Para pagar deudas de la crisis asiática de 1997.","Para forzar a la Fed a subir sus tasas.","Para evitar que sus monedas se apreciaran y mantener competitivos sus sectores exportadores; en China, las exportaciones a EE. UU. subieron de 8% a 15% del PIB entre 2000 y 2006."],
+  ok:3,pista:"¿Qué le pasaría a la moneda china si su banco central no comprara los dólares que entran por exportaciones?",
+  exp:"El caso (p. 7) dice que, al comprar reservas para evitar la apreciación frente al dólar, los bancos centrales asiáticos mantuvieron competitivos sus sectores exportadores, una estrategia clave para China. De paso mantuvieron bajas las tasas de EE. UU.",
+  estudiar:"Caso p. 7 · Guía 2.8"},
+ {k:"q",id:"q22",tipo:"L",tema:"Equilibrio del terror financiero",
+  enun:"¿Qué quiso decir Larry Summers con “equilibrio del terror financiero”?",
+  op:["El temor de los bancos a prestar después de la crisis de 2008.","EE. UU. confiaba en que al resto del mundo le costaría demasiado dejar de financiarlo: China seguiría comprando dólares para evitar un colapso que dañaría su propio crecimiento, y EE. UU. evitaría sanciones duras por la moneda china.","El uso de sanciones financieras para congelar reservas de países hostiles.","El riesgo de que el Congreso no eleve el techo de la deuda."],
+  ok:1,pista:"El “terror” es mutuo: ¿quién pierde si China deja de comprar dólares? ¿Y si EE. UU. sanciona a China?",
+  exp:"El caso (p. 9) define el término como la situación en que EE. UU. dependía de los costos que tendría para el resto del mundo no financiarlo. China evitaría un colapso del dólar que dañara el consumo de EE. UU., y EE. UU. evitaría sanciones que traerían inflación, tasas más altas y recesión. Otros lo llamaron “financiamiento del proveedor” o “Bretton Woods II”.",
+  estudiar:"Caso p. 9 · Guía 2.10 y T20"},
+
+ {k:"lec",id:"l13",titulo:"Asimetría de elasticidades ingreso",clase:false,
+  esencia:"Si las importaciones de EE. UU. responden más al PIB de EE. UU. que sus exportaciones al PIB externo, crecer al mismo ritmo que el mundo empeora la balanza comercial.",
+  porque:"Con tipo de cambio constante, la balanza solo mejora si el resto del mundo crece lo bastante más rápido para compensar la asimetría. Por eso “que el mundo crezca más” no basta para cerrar el déficit.",
+  formula:"%ΔM = ε_M · g     %ΔX = ε_X · g*     (g: crecimiento de EE. UU.; g*: del resto del mundo)",
+  puntos:["ε_M = 1,8 y ε_X = 0,8 (Hooper, Johnson y Márquez, nota 72 del caso).","La asimetría es más extrema en bienes y se invierte en servicios.","El Informe Económico del Presidente 2005 preveía que crecer más afuera mejoraría la balanza; muchos lo consideraron demasiado simple."],
+  fuente:"<b>No está en las láminas de clase.</b> Caso p. 9 (notas 71–73); Guía 2.10 y T13 (Houthakker–Magee).",
+  metodo:["Calcula el crecimiento de M: ε_M × g.","Calcula el crecimiento de X: ε_X × g*.","Aplica cada tasa a su nivel inicial.","Nueva balanza = X₁ − M₁ y compárala con la inicial."],
+  apl:{texto:"Ejercicio con tu guía (T13): con g = g* = 3%, las importaciones crecen 1,8 × 3 = 5,4% y las exportaciones 0,8 × 3 = 2,4%. Si X = M = 100, la balanza pasa de 0 a 102,4 − 105,4 = −3 (cálculo propio).",origen:"Elasticidades del caso; el ejemplo numérico es propio de tu guía.",aviso:"El examen puede usar otras elasticidades, tasas de crecimiento o niveles."}},
+ {k:"q",id:"q23",tipo:"EN",tema:"Asimetría de elasticidades",
+  enun:"Exportaciones = 100, importaciones = 120, g (EE. UU.) = 2%, g* (resto del mundo) = 3%, ε_M = 1,8 y ε_X = 0,8. ¿Cuál es la balanza comercial después de un año?",
+  op:["−21,9: empeora aunque el resto del mundo crece más rápido.","−20,0: no cambia, porque el mundo crece más.","−16,5: mejora, porque g* > g.","−24,1: empeora, porque las importaciones crecen con g*."],
+  ok:0,pista:"Las importaciones de EE. UU. dependen de g y las exportaciones de g*. Multiplica cada elasticidad por el crecimiento que le corresponde.",
+  exp:"M crece 1,8 × 2% = 3,6% → 124,32. X crece 0,8 × 3% = 2,4% → 102,4. Balanza = 102,4 − 124,32 ≈ −21,9. (C) intercambia las elasticidades. (D) aplica g* a las importaciones.",
+  estudiar:"Caso p. 9 · Guía T13"},
+
+ {k:"lec",id:"l14",titulo:"Sostenibilidad: PIIN, exportaciones y r frente a g",clase:"parcial",
+  esencia:"Una deuda externa pesa más cuanto menos exporta el país, porque las divisas para pagarla salen de exportar, y cuanto más alta es la tasa de interés respecto del crecimiento.",
+  porque:"Si r > g, la razón deuda/PIB crece sola, salvo que el país tenga un superávit comercial suficiente. Ese superávit es proporcional a la deuda.",
+  formula:"Años de exportaciones = |PIIN/PIB| ÷ (X/PIB)     PIIN/PIB estable si  tb = −[(r − g)/(1 + g)] · b",
+  puntos:["Caso p. 10: PIIN de 2017 −40% del PIB; Australia −59% y Nueva Zelanda −131% (2003).","Exportaciones: EE. UU. 10% del PIB (cifra de Roubini y Setser, 2004), Australia 17%, Nueva Zelanda 35%.","2019: PIIN −52% (Anexo 6) y exportaciones 12% del PIB (Anexo 2a).","EE. UU. se endeuda en su propia moneda: traslada el riesgo cambiario a sus acreedores. Rubin: esa inmunidad “no es un derecho de nacimiento” (caso p. 3)."],
+  fuente:"<b>Clase Desbalances globales, lámina 28</b>, solo plantea la pregunta (“¿será sostenible?”). La fórmula de r frente a g <b>no está en las láminas</b>: Guía T4 (complemento). La lectura del Módulo 3 (USW cap. 2, lección 18) muestra la versión de dos períodos: un deudor debe tener superávits comerciales. Caso pp. 3 y 10.",
+  metodo:["Expresa la PIIN y las exportaciones en % del PIB.","Divide para obtener años de exportaciones.","Para r frente a g, usa b con su signo (negativo si es deudor).","Calcula tb: si sale positivo, el país necesita superávit comercial."],
+  apl:{texto:"Ejercicio con tu guía (2.11 y T22): EE. UU. 2019: 52 / 12 ≈ 4,3 años de exportaciones. Australia: 59 / 17 ≈ 3,5. Nueva Zelanda: 131 / 35 ≈ 3,7 (cálculos propios). Ojo: el 10% de exportaciones del caso viene de una fuente de 2004, no de 2017.",origen:"Cifras del caso y de sus anexos en tu guía; las razones son cálculos propios.",aviso:"En el examen pueden darte otras cifras de PIIN, exportaciones, r o g."}},
+ {k:"q",id:"q24",tipo:"EG",tema:"PIIN en años de exportaciones",
+  enun:"Con los datos de tu guía para 2019 (PIIN de −52% del PIB y exportaciones de 12% del PIB), ¿a cuántos años de exportaciones equivale la deuda externa neta de EE. UU.?",
+  op:["≈ 5,2 años (52 / 10)","≈ 0,23 años (12 / 52)","≈ 4,3 años","≈ 3,7 años, igual que Nueva Zelanda"],
+  ok:2,pista:"Divide la deuda (en % del PIB) por las exportaciones (en % del PIB), y usa la cifra de exportaciones de 2019.",
+  exp:"52 / 12 ≈ 4,3 años. (A) usa el 10% de exportaciones, que es una cifra de 2004 citada por el caso, no la de 2019. (B) invierte la división. (D) es la razón de Nueva Zelanda (131 / 35).",
+  estudiar:"Caso p. 10 · Anexos 2a y 6 · Guía 2.11 y T22"},
+ {k:"q",id:"q25",tipo:"EN",tema:"Condición r frente a g",
+  enun:"Un país tiene PIIN de −50% del PIB, r = 4% y g = 2%. Según tb = −[(r − g)/(1 + g)]·b, ¿qué balanza comercial estabiliza su PIIN/PIB?",
+  op:["Déficit de ≈ 1% del PIB","Superávit de 2% del PIB","Balanza cero, porque r > g","Superávit de ≈ 1% del PIB"],
+  ok:3,pista:"b = −0,5. Calcula (r − g)/(1 + g) y multiplica por −b.",
+  exp:"tb = −(0,02 / 1,02) × (−0,5) ≈ +0,98% del PIB. Un deudor con r > g necesita superávit comercial para que su deuda no crezca como proporción del PIB. (B) multiplica (r − g) por 1 en vez de por 0,5. Esta fórmula es teoría complementaria de tu guía (T4), no de las láminas.",
+  estudiar:"Guía T4 (complemento)"},
+
+ {k:"lec",id:"l15",titulo:"Ajuste con no transables y aterrizaje forzoso",clase:false,
+  esencia:"Para cerrar el déficit, EE. UU. debe producir más bienes transables y gastar menos. Si los no transables son la mayor parte del producto, se necesita un gran cambio de precios relativos: una depreciación real fuerte.",
+  porque:"La depreciación real encarece los transables respecto de los no transables y desplaza recursos hacia el sector exportador. El problema es que el capital extranjero fue a no transables (vivienda), no a capacidad exportadora.",
+  formula:"Tipo de cambio real interno ≈ P_T / P_N     cerrar la CC  →  ↑ P_T / P_N",
+  puntos:["Obstfeld y Rogoff: depreciación del dólar de hasta 40% o más (2004); el déficit es una “espada de Damocles”.","Roubini y Setser: la CC sigue creciendo por los pagos de la deuda aunque la balanza comercial se estabilice: dinámica explosiva.","Cadena del aterrizaje forzoso: el dólar cae → inflación y tasas largas suben → caen acciones y vivienda → recesión en EE. UU. → recesión mundial, peor en Europa y Japón.","Roach (2006): el mundo se apoyó demasiado en el consumidor estadounidense."],
+  fuente:"<b>No está en las láminas de clase.</b> Caso pp. 3 y 11–12; Guía 2.12, T15 y T16.",
+  metodo:["Identifica qué sector debe expandirse (transables).","Pregunta qué precio relativo debe moverse.","Evalúa la magnitud: es mayor cuanto más chico el sector transable y cuanto más tarde llegue el ajuste.","Sigue la cadena de transmisión: dólar → inflación → tasas → activos → demanda."],
+  apl:{texto:"Ejercicio con tu guía (2.12): Obstfeld y Rogoff estimaron hasta 40% o más de depreciación. Roubini y Setser: aunque la balanza comercial se estabilice, la CC empeora por la balanza de ingresos, que es el componente de la lámina 7 de la clase que crece con la deuda.",origen:"Cifras del caso en tu guía; la conexión con la lámina 7 es de la clase.",aviso:"Pueden preguntarte la magnitud de la depreciación o pedirte la cadena del aterrizaje forzoso."}},
+ {k:"q",id:"q26",tipo:"T",tema:"No transables y depreciación real",
+  enun:"¿Por qué, según Obstfeld y Rogoff, los bienes no transables hacen más difícil cerrar el déficit de EE. UU.?",
+  op:["Porque los no transables son la mayor parte del producto de EE. UU. y el capital que entró no fue a transables, así que cerrar la cuenta corriente exige un gran cambio de precios relativos: una depreciación real del dólar de hasta 40% o más.","Porque los no transables se exportan con facilidad y saturarían los mercados externos.","Porque la OMC prohíbe gravar el comercio de servicios locales.","Porque una apreciación del dólar abarataría los no transables y cerraría el déficit sin costo."],
+  ok:0,pista:"Para pagar deudas externas hay que generar divisas. ¿Qué sector las genera y qué precio relativo debe subir para atraer recursos hacia él?",
+  exp:"El caso (p. 11) cita a Obstfeld y Rogoff: mientras los no transables sean la mayor parte del producto, una contracción fuerte de las importaciones netas exigirá un gran ajuste cambiario, más brusco cuanto más se postergue. Estimaron hasta 40% o más. Los no transables, por definición, no se exportan.",
+  estudiar:"Caso p. 11 · Guía T15"},
+ {k:"q",id:"q27",tipo:"L",tema:"Dinámica explosiva (Roubini y Setser)",
+  enun:"¿Qué argumentaron Roubini y Setser sobre el riesgo de un “aterrizaje forzoso”?",
+  op:["Que la Fed quebraría por el déficit comercial.","Que la cuenta corriente seguiría creciendo por los mayores pagos sobre la deuda externa aunque la balanza comercial se estabilizara, una dinámica explosiva que lleva a crisis financieras.","Que China usaría sus bonos del Tesoro para comprar infraestructura militar de EE. UU.","Que el euro reemplazaría al dólar como moneda de reserva en menos de un año."],
+  ok:1,pista:"Recuerda CC = BC + ingresos + transferencias (lámina 7). ¿Qué componente crece solo cuando crece la deuda?",
+  exp:"El caso (p. 11) cita: “The current account deficit will continue to grow on the back of higher and higher payments on U.S. foreign debt even if the trade deficit stabilizes”. En la descomposición de la clase, es la balanza de ingresos la que empeora con la deuda.",
+  estudiar:"Caso p. 11 · Clase Desbalances globales lám. 7 · Guía 2.12"},
+
+ {k:"lec",id:"l16",titulo:"2008–2020: estímulos, techo de deuda y las tres fuerzas",clase:false,
+  esencia:"Un déficit fiscal mayor puede subir las tasas, atraer capital y apreciar el dólar, lo que amplía el déficit externo. Es el mecanismo de Mundell–Fleming con tipo de cambio flexible.",
+  porque:"El gobierno compite por ahorro. Si el ahorro interno no alcanza, entra ahorro externo y la CC se vuelve más negativa.",
+  formula:"↑(G − T) → ↑ i → entrada de capital → dólar se aprecia → ↓ X, ↑ M → ↓ CC",
+  puntos:["2009: estímulo de US$ 787 mm; déficit fiscal de casi US$ 1,5 billones, poco menos de 10% del PIB.","2011: pugna por el límite de endeudamiento hasta el 2 de agosto; el 5 de agosto S&P baja la deuda a AA+. Beijing pide a Washington “curar su adicción a la deuda”.","Déficit fiscal: ≈ 7% (2012), 2,4% (2015), 3,5% del PIB (2017). Recortes de 2017 y gasto de 2018: más de US$ 1 billón en agosto de 2019.","Julio de 2018: el BEA revisa el ahorro privado 3% del PIB al alza (US$ 650 mm no declarados). Cambia la medición, no el ahorro real.","Tres fuerzas que podían ampliar el déficit: el déficit fiscal, las alzas de la Fed (1,75–2,0%, con inflación de 2,1%) y las guerras comerciales (acero un tercio más caro; Harley-Davidson traslada producción a Europa).","El shale subió la producción de petróleo 120% entre 2008 y 2018 y redujo la necesidad de importar."],
+  fuente:"<b>No está en las láminas de clase.</b> Caso pp. 11–14; Guía 2.12–2.13 y T11 (Mundell–Fleming, complemento). El efecto de los aranceles sobre la balanza está en la lectura del Módulo 3 (USW cap. 4, lección 21).",
+  metodo:["Para cada shock, escribe la cadena hasta el tipo de cambio.","Si el dólar se aprecia, la CC empeora.","Separa los shocks que reducen importaciones (como el shale) de los que amplían el déficit."],
+  apl:{texto:"Ejercicio con tu guía (2.13): el caso aplica Mundell–Fleming solo a las dos primeras fuerzas (fiscal y Fed): más tasas, más entrada de capital, dólar más fuerte. La tercera, las guerras comerciales, opera por incertidumbre y represalias.",origen:"Datos del caso en tu guía, no de la clase.",aviso:"Te pueden pedir identificar la fuerza que no corresponde o la cadena de transmisión."}},
+ {k:"q",id:"q28",tipo:"L",tema:"Las tres fuerzas 2017–2019",
+  enun:"El caso menciona tres fuerzas que en 2017–2019 podían ampliar el déficit en cuenta corriente. ¿Cuál NO es una de ellas?",
+  op:["El mayor déficit fiscal por los recortes de impuestos de 2017 y el gasto de 2018.","Las alzas de tasas de la Fed, que fortalecieron el dólar.","La revolución del shale, que elevó la producción de petróleo 120% entre 2008 y 2018.","Las guerras comerciales, que aumentaron la incertidumbre (Harley-Davidson trasladó producción a Europa)."],
+  ok:2,pista:"Las tres fuerzas empujan el déficit hacia arriba. ¿Cuál de estas opciones reduce las importaciones?",
+  exp:"El caso (p. 13) nombra el financiamiento del déficit fiscal, las políticas de la Fed para estabilizar la inflación y las guerras comerciales. El shale (p. 11) va en sentido contrario: redujo la necesidad de importar petróleo.",
+  estudiar:"Caso pp. 11 y 13 · Guía 2.13"},
+ {k:"q",id:"q29",tipo:"L",tema:"Rebaja de S&P (2011)",
+  enun:"¿Qué llevó a Standard & Poor's a rebajar la deuda soberana de EE. UU. a AA+ en agosto de 2011?",
+  op:["El impago de la deuda del estado de California.","La pugna política por elevar el límite de endeudamiento, que llevó el acuerdo hasta el 2 de agosto; S&P citó que la efectividad, estabilidad y previsibilidad de las instituciones se habían debilitado.","La crisis de la zona euro, que arrastró a la banca de EE. UU.","El fraude contable de Enron."],
+  ok:1,pista:"Mira la fecha: 5 de agosto de 2011, tres días después de un plazo legal en el Congreso.",
+  exp:"El caso (p. 12) relata el “juego de la gallina” sobre el límite de endeudamiento, resuelto con una medida temporal el mismo 2 de agosto. S&P bajó la nota el 5 de agosto citando el deterioro de la efectividad, estabilidad y previsibilidad de la política estadounidense.",
+  estudiar:"Caso p. 12 · Guía 2.12"},
+
+ {k:"lec",id:"l17",titulo:"Hechos estilizados: EE. UU. frente al mundo",clase:true,
+  esencia:"En el ciclo económico, la balanza comercial y la cuenta corriente son contracíclicas: en los auges el gasto sube más que el producto y se importa más; en las recesiones el déficit se cierra.",
+  porque:"Las importaciones son procíclicas y muy volátiles. En recesión, la absorción (consumo e inversión) cae más que el producto.",
+  formula:"corr(tb/y, y): EE. UU. −0,51; mundo −0,15     σ_y: 2,94 vs. 6,22     (X + M)/Y: 18,9% vs. 36,5%",
+  puntos:["Hecho 5: la balanza comercial y la CC son contracíclicas (promedio mundial corr(tb/y, y) = −0,18, lám. 16).","EE. UU. es mucho menos volátil que el mundo: ¿suerte o mejores políticas? (lám. 20).","La participación del gasto público es más contracíclica en EE. UU. (−0,32 vs. −0,02).","Hecho 10: el consumo del gobierno es contracíclico en los países ricos (−0,39) y acíclico en emergentes y pobres (lám. 29).","EE. UU. es menos abierto: 18,9% contra 36,5%."],
+  fuente:"<b>Clase Hechos estilizados de las economías pequeñas y abiertas, láminas 16, 19–20, 29 y 35.</b> Guía T22.",
+  metodo:["Identifica la fase del ciclo (auge o recesión).","Aplica el signo de la correlación.","Contrasta con los datos del caso.","Si no cuadra, busca un shock especial."],
+  apl:{texto:"Ejercicio con tu guía (T22): en la recesión 2007–2009 la CC pasa de −US$ 737 mm a −US$ 380 mm (Anexo 4a): el déficit se cierra, como predice el Hecho 5. Excepción: en 2020 la CC se amplió en recesión (−2,2% a −3,1% del PIB). Los hechos estilizados son promedios, no leyes.",origen:"Correlaciones de la clase; cifras de 2007–2009 del caso en tu guía.",aviso:"Te pueden dar otra correlación o pedirte que la interpretes con otro episodio."}},
+ {k:"q",id:"q30",tipo:"T",tema:"Contraciclicidad de la balanza",
+  enun:"En la clase, corr(tb/y, y) es −0,51 para EE. UU. y −0,15 para el mundo. ¿Qué implica y qué dato del caso lo ilustra?",
+  op:["La balanza comercial es procíclica: mejora en los auges, como en 2009.","No hay relación entre ciclo y balanza; la CC de 2009 se explica solo por el dólar.","La balanza es contracíclica en el mundo pero procíclica en EE. UU.","La balanza comercial es contracíclica, y más en EE. UU.: en la recesión 2007–2009 el déficit en cuenta corriente se redujo de US$ 737 mm a US$ 380 mm."],
+  ok:3,pista:"Una correlación negativa con el producto significa que la balanza mejora cuando el producto cae. ¿Qué pasó con el déficit en 2009?",
+  exp:"Una correlación negativa indica contraciclicidad: la balanza empeora en los auges y mejora en las recesiones. EE. UU. (−0,51) es más contracíclico que el promedio mundial (−0,15). En 2007–2009 el déficit se cerró de 737 a 380 mm (Anexo 4a), coherente con el Hecho 5.",
+  estudiar:"Clase Hechos estilizados lám. 16, 19–20 y 35 · Guía T22"}
+ ]},
+{id:"b4",nombre:"Bloque 4",titulo:"Módulo 3: la cuenta corriente en los modelos",
+ desc:"Lecturas del Módulo 3: Uribe, Schmitt-Grohé y Woodford (2022), capítulos 2, 3, 4 y 7, aplicados al caso. Sostenibilidad, las cuatro identidades, la teoría intertemporal, aranceles y la economía grande.",
+ items:[
+ {k:"lec",id:"l18",titulo:"¿Se puede tener déficit para siempre?",clase:"lectura",
+  esencia:"Un deudor neto no puede tener déficit comercial para siempre: en algún momento debe tener superávits comerciales para pagar. Con horizonte infinito sí puede tener déficit en cuenta corriente para siempre, si la economía crece y paga parte de los intereses.",
+  porque:"La PIIN inicial, con sus intereses, debe igualar el valor presente de los superávits comerciales futuros. Al final nadie queda para cobrar ni pagar (condición de transversalidad), así que la deuda debe saldarse con comercio.",
+  formula:"B_t = (1 + r)·B_{t−1} + TB_t     con B₂ = 0:  (1 + r)·B₀ = −TB₁ − TB₂/(1 + r)     CA_t = B_t − B_{t−1}",
+  puntos:["Si B₀ < 0, el país necesita al menos un superávit comercial.","El resultado vale para cualquier número de períodos, incluso infinitos.","Con horizonte finito, un deudor tampoco puede tener déficit en cuenta corriente en todos los períodos (B₀ = −CA₁ − CA₂).","Con horizonte infinito, la deuda puede crecer si crece más lento que la tasa de interés y la economía crece."],
+  fuente:"<b>Lectura del Módulo 3:</b> Uribe, Schmitt-Grohé y Woodford (2022), cap. 2; Resumen Módulo 3, §2.2–2.3. Conecta con la lámina 28 de Desbalances globales (“¿será sostenible?”).",
+  metodo:["Escribe la restricción: (1 + r)·B₀ = −TB₁ − TB₂/(1 + r).","Reemplaza B₀ (negativo si es deudor), r y lo que sepas de TB₁.","Despeja el TB que falta.","Interpreta: un TB positivo es el superávit que el país necesita."],
+  apl:{texto:"Ejemplo del resumen: B₀ = −100 y r = 10%. Si TB₁ = 0, entonces 110 = TB₂/1,1 y TB₂ = 121. Con horizonte infinito, si el país paga 5 de los 10 de intereses, CA = −5 y la deuda sube a 105: crece 5% al año, menos que el 10% de interés. Aplicado al caso: con una PIIN de ≈ −47% del PIB en 2018, EE. UU. deberá revertir sus déficits comerciales en algún momento.",origen:"Ejemplo numérico del resumen del Módulo 3 (ilustración propia con las fórmulas de las láminas del libro), no del caso.",aviso:"En el examen pueden cambiar B₀, r o TB₁; despeja con la misma restricción."}},
+ {k:"q",id:"q31",tipo:"EN",tema:"Superávit necesario (dos períodos)",
+  enun:"Un país parte con B₀ = −200 y la tasa de interés es 5%. Si en el período 1 tiene balanza comercial cero, ¿qué balanza comercial necesita en el período 2?",
+  op:["Superávit de 210","Superávit de 220,5","Déficit de 220,5","Superávit de 200"],
+  ok:1,pista:"Usa (1 + r)·B₀ = −TB₁ − TB₂/(1 + r). Con TB₁ = 0, despeja TB₂ multiplicando por (1 + r).",
+  exp:"(1,05)(−200) = −210 = −TB₂/1,05, así que TB₂ = 210 × 1,05 = 220,5. (A) olvida capitalizar el segundo período. (D) ignora los intereses.",
+  estudiar:"USW (2022) cap. 2 · Resumen Módulo 3 §2.2"},
+ {k:"q",id:"q32",tipo:"T",tema:"Déficit perpetuo de un deudor",
+  enun:"Según el capítulo 2, ¿qué puede hacer un país deudor neto como EE. UU. con horizonte infinito?",
+  op:["Mantener déficit comercial y en cuenta corriente para siempre, porque se endeuda en su propia moneda.","Nada de lo anterior: ningún país puede tener déficit en cuenta corriente dos años seguidos.","Mantener déficit comercial para siempre si la tasa de interés es baja.","No puede tener déficit comercial para siempre, pero sí déficit en cuenta corriente perpetuo si crece y paga parte de los intereses, de modo que su deuda crezca más lento que la tasa de interés."],
+  ok:3,pista:"Distingue la balanza comercial de la cuenta corriente: CA = rB + TB. ¿Cuál de las dos incluye los intereses?",
+  exp:"El valor presente de los superávits comerciales debe cubrir la deuda inicial, así que un deudor necesita superávits comerciales en algún momento. La cuenta corriente puede seguir negativa si el superávit comercial paga solo parte de los intereses y la economía crece. Endeudarse en moneda propia (A) no cambia la restricción del modelo.",
+  estudiar:"USW (2022) cap. 2 · Resumen Módulo 3 §2.3 y §2.6"},
+
+ {k:"lec",id:"l19",titulo:"Las cuatro expresiones de la cuenta corriente",clase:"lectura",
+  esencia:"A partir de la igualdad entre oferta y demanda agregadas salen cuatro expresiones equivalentes de la cuenta corriente. Son identidades contables: no explican qué la determina.",
+  porque:"Para saber qué mueve la cuenta corriente hace falta un modelo de hogares, empresas, gobierno y extranjeros. Por eso los capítulos 3, 4 y 7 construyen ese modelo.",
+  formula:"CA = B_t − B_{t−1} = r·B_{t−1} + TB = S − I = Y − A     Y = Q + r·B_{t−1}     S = Y − C − G     A = C + G + I     TB = Q − A",
+  puntos:["CA = ΔB: cambio en la PIIN (sin valoración, a diferencia de la clase).","CA = rB + TB: intereses netos más balanza comercial. Con una sola tasa, un deudor paga intereses netos; EE. UU. recibía más porque sus activos rendían más.","CA = S − I ordena el caso: déficits gemelos en los 80 y auge de inversión a fines de los 90.","CA = Y − A: ingreso nacional menos absorción."],
+  fuente:"<b>Lectura del Módulo 3:</b> USW (2022), cap. 2; Resumen Módulo 3, §2.4–2.5. Complementa la lámina 7 (componentes) y la lámina 31 (valoración) de Desbalances globales.",
+  metodo:["Calcula el ingreso nacional: Y = Q + r·B_{t−1}.","Calcula el ahorro nacional: S = Y − C − G.","CA = S − I.","Comprueba con TB = Q − C − G − I y CA = r·B_{t−1} + TB."],
+  apl:{texto:"Aplicado al caso (guía 2.6–2.7 y T2): en los 80, el déficit fiscal de Reagan bajó el ahorro nacional; a fines de los 90 la inversión subió de 5,5% a 8,6% del PIB y el ahorro de los hogares cayó a menos de 1%. Las identidades describen ambos episodios, pero no dicen por qué ocurrieron.",origen:"Cifras del caso; la clasificación en cuatro identidades es del libro (Módulo 3).",aviso:"Te pueden dar Q, C, G, I, r y B y pedirte cualquiera de las cuatro formas; todas deben dar lo mismo."}},
+ {k:"q",id:"q33",tipo:"EN",tema:"Las cuatro identidades con números",
+  enun:"Q = 1.000, r = 5%, B_{t−1} = −400, C = 700, G = 150 e I = 200. ¿Cuál es la cuenta corriente?",
+  op:["−70","−50","+130","−20"],
+  ok:0,pista:"Primero el ingreso nacional, Y = Q + r·B_{t−1}. Luego S = Y − C − G y CA = S − I.",
+  exp:"Y = 1.000 + 0,05 × (−400) = 980; S = 980 − 700 − 150 = 130; CA = 130 − 200 = −70. Verificación: TB = 1.000 − 700 − 150 − 200 = −50 y CA = rB + TB = −20 − 50 = −70. (B) es solo la balanza comercial; (C) es el ahorro; (D) son solo los intereses.",
+  estudiar:"USW (2022) cap. 2 · Resumen Módulo 3 §2.4"},
+ {k:"q",id:"q34",tipo:"T",tema:"Identidades vs. teoría",
+  enun:"¿Qué concluyen las láminas del capítulo 2 sobre las cuatro expresiones de la cuenta corriente?",
+  op:["Que CA = S − I demuestra que todo déficit externo se debe a un déficit fiscal.","Que solo CA = rB + TB es válida para economías grandes.","Que son identidades contables equivalentes y no explican por sí solas la cuenta corriente: para eso se necesita un modelo de comportamiento.","Que la cuenta corriente siempre es igual a la balanza comercial."],
+  ok:2,pista:"Una identidad se cumple siempre, sea cual sea la causa. ¿Puede una igualdad que siempre se cumple identificar causas?",
+  exp:"Las cuatro expresiones se cumplen siempre, por contabilidad. No dicen qué variable causa a cuál. El caso de fines de los 90 lo muestra: hubo superávit fiscal y déficit externo, así que (A) es falsa.",
+  estudiar:"USW (2022) cap. 2 · Resumen Módulo 3 §2.4 y §2.6"},
+
+ {k:"lec",id:"l20",titulo:"Teoría intertemporal: los shocks se financian o se ajustan",clase:"lectura",
+  esencia:"Los hogares suavizan su consumo. Un shock transitorio de ingreso se financia con la cuenta corriente; uno permanente se ajusta con el consumo; y las buenas noticias sobre el futuro empeoran la cuenta corriente hoy.",
+  porque:"El consumo depende de la riqueza total (valor presente del ingreso), no solo del ingreso de hoy. Si el ingreso cae solo hoy, la riqueza cae poco y se pide prestado; si cae siempre, la riqueza cae casi lo mismo y se consume menos.",
+  formula:"Euler: U′(C₁) = β(1 + r)·U′(C₂)     Log, β = 1:  C₁ = Ȳ/2,  Ȳ = (1 + r)B₀ + Q₁ + Q₂/(1 + r)     TB = Q − C",
+  puntos:["Economía pequeña: no influye en r*. Abierta: comercia bienes y activos. EE. UU. es grande (por eso el cap. 7).","Paridad de tasas: r₁ = r* con libre movilidad de capital.","Con utilidad logarítmica: transitorio ΔCA₁ = ½ΔQ₁; permanente ΔCA₁ = ½·r*/(1 + r*)·ΔQ₁; anticipado ΔCA₁ = −ΔQ₂/[2(1 + r*)].","Un déficit no es necesariamente señal de debilidad: puede reflejar buenas noticias."],
+  fuente:"<b>Lectura del Módulo 3:</b> USW (2022), cap. 3; Resumen Módulo 3, §3.3–3.7. Guía T18 (enfoque intertemporal).",
+  metodo:["Calcula la riqueza total Ȳ.","Consumo de hoy: C₁ = Ȳ/2 (logarítmica, β = 1, r = 0).","TB₁ = Q₁ − C₁.","Repite con el shock y compara: la diferencia en TB₁ es el efecto."],
+  apl:{texto:"Ejemplo del resumen: r* = 0, B₀ = 0, Q₁ = 80 y Q₂ = 120 → C₁ = 100 y TB₁ = −20. Transitorio (Q₁ = 60): C₁ = 90 y TB₁ = −30. Permanente (60 y 100): C₁ = 80 y TB₁ = −20. Anticipado (Q₂ = 140): C₁ = 110 y TB₁ = −30. Aplicado al caso: la “nueva economía” es un shock anticipado; el déficit de fines de los 90 podía ser óptimo, salvo que las expectativas fueran exageradas (burbuja).",origen:"Ejemplo numérico del resumen del Módulo 3, no del caso.",aviso:"En el examen pueden cambiar Q₁, Q₂ o el tipo de shock."}},
+ {k:"q",id:"q35",tipo:"EN",tema:"Shock transitorio (utilidad logarítmica)",
+  enun:"Con U = ln C₁ + ln C₂, β = 1, r* = 0, B₀ = 0, Q₁ = 100 y Q₂ = 100, la balanza comercial inicial es cero. Si Q₁ cae transitoriamente a 80, ¿cuál es la nueva TB₁?",
+  op:["−10","−20","0","+10"],
+  ok:0,pista:"Riqueza = 80 + 100 = 180. El hogar consume la mitad hoy. TB₁ = Q₁ − C₁.",
+  exp:"C₁ = 180/2 = 90 y TB₁ = 80 − 90 = −10. El hogar financia la mitad de la caída con deuda: ΔCA₁ = ½ΔQ₁ = −10. (B) supone que el consumo no cambia; (C) sería el caso de un shock permanente.",
+  estudiar:"USW (2022) cap. 3 · Resumen Módulo 3 §3.5"},
+ {k:"q",id:"q36",tipo:"T",tema:"Nueva economía como shock anticipado",
+  enun:"Según la teoría intertemporal del capítulo 3, ¿cómo se lee el déficit de EE. UU. durante la “nueva economía” de fines de los 90?",
+  op:["Como un shock permanente negativo, que no debería mover la cuenta corriente.","Como prueba de que EE. UU. era una economía débil que no podía pagar sus deudas.","Como un shock transitorio negativo que se financió con deuda.","Como un shock anticipado positivo: si se esperaba más ingreso futuro por la productividad, era óptimo consumir e invertir más hoy con déficit; el problema surge si esas expectativas eran exageradas."],
+  ok:3,pista:"¿Qué esperaban los agentes sobre su ingreso futuro durante el auge tecnológico? ¿Qué hace una buena noticia futura con la cuenta corriente de hoy?",
+  exp:"Un aumento esperado de Q₂ eleva la riqueza y el consumo de hoy sin subir Q₁, así que la cuenta corriente empeora. Es la lectura optimista del Informe Económico del Presidente de 2006. La visión pesimista (Obstfeld y Rogoff) cabe en el mismo modelo si las expectativas se basaban en burbujas.",
+  estudiar:"USW (2022) cap. 3 · Resumen Módulo 3 §3.4 y §3.6 · Caso pp. 2–3 y 6"},
+
+ {k:"lec",id:"l21",titulo:"Términos de intercambio, tasa mundial y aranceles",clase:"lectura",
+  esencia:"Lo que importa para la cuenta corriente no es solo el valor actual de cada variable, sino su trayectoria esperada. Los términos de intercambio actúan como shocks de ingreso, y el efecto de un arancel depende de cómo se compara con los aranceles futuros.",
+  porque:"Al hogar le da igual si su ingreso sube por más producción o por mejores precios. Con los aranceles, lo que mueve el consumo entre períodos es el precio relativo de importar hoy frente a mañana.",
+  formula:"TT = Pˣ / Pᴹ     ingreso = TT·Q     ↑ r*: efecto sustitución (C₁ ↓) + efecto ingreso (↓ si deudor)",
+  puntos:["Cobre en Chile: precio real de 120 a más de 350 centavos la libra (2003–2007). La CC pasó de déficits de ≈ 1% a superávits de ≈ 3% del PIB, porque los expertos esperaban un alza transitoria.","Alza de r*: domina el efecto sustitución; C₁ cae y la CC mejora. Para un deudor ambos efectos se refuerzan.","Arancel transitorio (solo hoy): mejora la TB₁. Permanente: sin efecto. Anticipado (solo mañana): empeora la TB₁. En todos los casos baja el bienestar.","Caso: el petróleo de 1999–2002 (US$ 68 mm a US$ 104 mm) fue un deterioro de términos de intercambio para EE. UU."],
+  fuente:"<b>Lectura del Módulo 3:</b> USW (2022), cap. 4; Resumen Módulo 3, §4.2–4.7.",
+  metodo:["Clasifica el shock: transitorio, permanente o anticipado.","Para precios o ingreso: transitorio → se financia (mueve la CC); permanente → se ajusta (casi no la mueve).","Para aranceles: compara el arancel de hoy con el esperado mañana.","Para r*: revisa si el país es deudor o acreedor."],
+  apl:{texto:"Aplicado al caso (guía 2.1 y 2.13): los aranceles de Trump. Si se percibían como permanentes, no debían afectar la balanza comercial; los anunciados para el futuro (agosto de 2019, 10% sobre US$ 300.000 mm de productos chinos) debían empeorarla en el corto plazo al adelantar importaciones. Es coherente con que el déficit no se cerrara.",origen:"Hechos del caso; la predicción es del modelo del Módulo 3.",aviso:"Te pueden presentar otro arancel u otro shock de precios y pedir el signo del efecto."}},
+ {k:"q",id:"q37",tipo:"L",tema:"El cobre en Chile",
+  enun:"Entre 2003 y 2007 el precio real del cobre se triplicó y siguió alto hasta 2013. ¿Por qué mejoró la cuenta corriente de Chile, según las láminas del capítulo 4?",
+  op:["Porque el alza era permanente, y los shocks permanentes siempre mejoran la cuenta corriente.","Porque los expertos chilenos esperaban que el alza fuera transitoria, y un shock que se cree transitorio se ahorra en gran parte.","Porque Chile subió aranceles a las importaciones en ese período.","Porque la tasa de interés mundial cayó y desincentivó el endeudamiento."],
+  ok:1,pista:"Con información perfecta sobre un alza duradera, la CC no debía mejorar. ¿Qué creían los expertos en 2005 sobre el precio futuro?",
+  exp:"En 2005 se proyectaba un precio promedio para 2005–2015 inferior a 100 centavos; solo hacia 2013 se aceptó que los precios altos eran duraderos. Con esas expectativas, el modelo predice correctamente que la CC mejore. Lo que importa es la trayectoria esperada del ingreso.",
+  estudiar:"USW (2022) cap. 4 · Resumen Módulo 3 §4.3"},
+ {k:"q",id:"q38",tipo:"T",tema:"Aranceles anticipados",
+  enun:"En agosto de 2019 se anunciaron aranceles adicionales sobre productos chinos para los meses siguientes. Según el capítulo 4, ¿qué efecto tiene en el corto plazo un arancel anticipado (solo mañana)?",
+  op:["Mejora la balanza comercial hoy, porque reduce las importaciones.","No tiene efecto, porque los aranceles se cancelan en la ecuación de Euler.","Empeora la balanza comercial hoy, porque conviene adelantar consumo e importaciones antes de que suban sus precios; además reduce el bienestar.","Mejora el bienestar, porque protege a la industria local."],
+  ok:2,pista:"Si sabes que las importaciones serán más caras mañana, ¿cuándo prefieres comprarlas?",
+  exp:"Un arancel solo futuro encarece consumir mañana respecto de hoy, así que se adelanta el consumo y la TB₁ empeora. (A) es el efecto de un arancel transitorio (solo hoy) y (B) el de uno permanente. En el modelo, los aranceles siempre reducen el bienestar.",
+  estudiar:"USW (2022) cap. 4 · Resumen Módulo 3 §4.5–4.6 · Caso p. 2"},
+
+ {k:"lec",id:"l22",titulo:"Economía grande: EE. UU. mueve la tasa mundial",clase:"lectura",
+  esencia:"Cuando una economía grande como EE. UU. se endeuda más, cambia la oferta y la demanda mundial de fondos y, con ello, la tasa de interés mundial. Sus shocks se transmiten al resto del mundo.",
+  porque:"El déficit de uno es el superávit del otro. La tasa mundial se ajusta hasta que el endeudamiento neto del mundo sea cero.",
+  formula:"CA_EEUU + CA_RM = 0     log, sin riqueza inicial:  r* = (Q₂ᴱᴱᵁᵁ + Q₂ᴿᴹ)/(Q₁ᴱᴱᵁᵁ + Q₁ᴿᴹ) − 1     C₁ = ½[Q₁ + Q₂/(1 + r*)]",
+  puntos:["Auge de inversión en EE. UU. (ejemplo de las láminas: el fracking): sube el déficit de EE. UU. y sube la tasa mundial.","Exceso de ahorro global (Bernanke): sube el déficit de EE. UU. y baja la tasa mundial.","Entre 1996 y 2006 el déficit pasó de 1,5% a cerca de 6% del PIB y la tasa real cayó: respalda el exceso de ahorro global.","Tras 2007 el déficit bajó y la tasa siguió bajando: la reducción fue “Hecha en EE. UU.” (estalla la burbuja, sube el ahorro y cae la inversión)."],
+  fuente:"<b>Lectura del Módulo 3:</b> USW (2022), cap. 7; Resumen Módulo 3, §5.2–5.7. Conecta con el caso p. 7 (Bernanke) y la guía T20.",
+  metodo:["Calcula r* con el ingreso mundial de cada período.","Calcula el consumo de cada región: C₁ = ½[Q₁ + Q₂/(1 + r*)].","CA = Q₁ − C₁ en cada región; verifica que sumen cero.","Para distinguir hipótesis, mira la dirección de la tasa de interés."],
+  apl:{texto:"Ejemplo del resumen: EE. UU. 40 hoy y 60 mañana; resto del mundo 60 y 40. r* = 0; CA de EE. UU. = −10 y del resto = +10. Si el ingreso futuro de EE. UU. sube a 85: r* = 25%, C₁ de EE. UU. = 54 (CA −14) y del resto = 46 (CA +14). Aplicado al caso: entre 2002 y 2005 los bancos centrales extranjeros financiaron US$ 1,2 de los US$ 2,3 billones de déficit acumulado, un desplazamiento de la curva del resto del mundo.",origen:"Ejemplo numérico del resumen del Módulo 3; las cifras 2002–2005 son del caso.",aviso:"En el examen pueden cambiar los ingresos de cada región o pedirte el efecto sobre la tasa."}},
+ {k:"q",id:"q39",tipo:"EN",tema:"Dos países: tasa mundial y CA",
+  enun:"EE. UU. y el resto del mundo tienen cada uno ingreso de 50 hoy y 50 mañana (utilidad logarítmica, sin riqueza inicial). Si el ingreso futuro de EE. UU. sube a 75, ¿cuáles son la tasa mundial y la cuenta corriente de EE. UU. hoy?",
+  op:["r* = 25% y CA de EE. UU. = −5","r* = 0 y CA de EE. UU. = −12,5","r* = 50% y CA de EE. UU. = −10","r* = 25% y CA de EE. UU. = +5"],
+  ok:0,pista:"r* = (ingreso mundial de mañana)/(ingreso mundial de hoy) − 1. Luego C₁ = ½[Q₁ + Q₂/(1 + r*)] para EE. UU.",
+  exp:"Ingreso mundial: 100 hoy y 125 mañana, así que r* = 25%. C₁ de EE. UU. = ½(50 + 75/1,25) = ½(50 + 60) = 55 y CA = 50 − 55 = −5. El resto del mundo consume ½(50 + 40) = 45 y tiene CA = +5. (B) supone que la tasa no se mueve, como en una economía pequeña.",
+  estudiar:"USW (2022) cap. 7 · Resumen Módulo 3 §5.4"},
+ {k:"q",id:"q40",tipo:"T",tema:"Exceso de ahorro global vs. “Hecho en EE. UU.”",
+  enun:"Ambas hipótesis explican el aumento del déficit de EE. UU. ¿Qué permite distinguirlas y qué concluyen las láminas del capítulo 7?",
+  op:["El tipo de cambio: si el dólar se aprecia, el déficit es “Hecho en EE. UU.”; como se apreció, esa hipótesis gana siempre.","El déficit fiscal: si sube, el exceso de ahorro global queda descartado.","Ninguna variable las distingue, porque CA_EEUU + CA_RM = 0 en ambas.","La tasa de interés: con exceso de ahorro global baja y con “Hecho en EE. UU.” sube. La tasa cayó entre 1996 y 2006 (respalda el exceso de ahorro global), y siguió bajando tras 2007 mientras el déficit se reducía (reducción “Hecha en EE. UU.”)."],
+  ok:3,pista:"Una hipótesis desplaza la curva del resto del mundo y la otra la de EE. UU. ¿Qué precio de equilibrio se mueve en sentido opuesto en cada caso?",
+  exp:"Si el resto del mundo quiere ahorrar más, la tasa mundial baja y EE. UU. se endeuda más porque es barato. Si EE. UU. ahorra menos o invierte más, la tasa sube. La tasa real cayó en 1996–2006, a favor del exceso de ahorro global; tras 2007 el déficit bajó con tasas aún más bajas, lo que apunta a causas internas (estallido de la burbuja).",
+  estudiar:"USW (2022) cap. 7 · Resumen Módulo 3 §5.5 · Caso p. 7"}
+ ]}
+
+];
+
+/* ---------------- ESTADO ---------------- */
+const KEY="ensayo-deficit-eeuu-v1";
+let S={ans:{},tab:"b1"};
+try{const raw=localStorage.getItem(KEY);if(raw){const p=JSON.parse(raw);if(p&&typeof p==="object"){S.ans=p.ans||{};S.tab=p.tab||"b1";}}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+const QS={};let qn=0;const LECN={};let ln=0;
+BLOQUES.forEach(b=>b.items.forEach(it=>{if(it.k==="q"){qn++;it.n=qn;it.b=b.id;QS[it.id]=it;}else{ln++;LECN[it.id]=ln;}}));
+const TOTAL=qn;
+
+function res(q){const t=(S.ans[q.id]||[]);if(!t.length)return null;if(t[0]===q.ok)return 1;if(t.length<2)return "p";return t[1]===q.ok?0.5:0;}
+function fmt(x){return (Math.round(x*10)/10).toString().replace(".",",");}
+function blockQs(b){return b.items.filter(i=>i.k==="q");}
+function blockScore(b){let s=0,d=0;blockQs(b).forEach(q=>{const r=res(q);if(typeof r==="number"){s+=r;d++;}});return{s,d,n:blockQs(b).length};}
+
+/* ---------------- RENDER ---------------- */
+const $=s=>document.querySelector(s);
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+
+function renderTop(){
+  let s=0,d=0;BLOQUES.forEach(b=>{const r=blockScore(b);s+=r.s;d+=r.d;});
+  $("#scoreTop").innerHTML=`<b>${fmt(s)}</b> / ${TOTAL} pts · ${d}/${TOTAL} respondidas`;
+  const tabs=BLOQUES.map(b=>{const r=blockScore(b);return `<button class="tab" role="tab" id="tab-${b.id}" aria-selected="${S.tab===b.id}" data-tab="${b.id}">${b.nombre}<span class="tp">${fmt(r.s)}/10</span></button>`;}).join("")+
+   `<button class="tab" role="tab" id="tab-fin" aria-selected="${S.tab==="fin"}" data-tab="fin">Resultado</button>`;
+  $("#tabs").innerHTML=tabs;
+}
+
+function badge(c){if(c==="lectura")return `<span class="badge cl">Lectura del curso · Módulo 3</span>`;if(c===true)return `<span class="badge cl">En las láminas de clase</span>`;if(c==="parcial")return `<span class="badge cl">Parcialmente en clase</span>`;return `<span class="badge co">Complemento: no está en las láminas</span>`;}
+
+function lessonHTML(l){
+  return `<details class="lesson" open id="${l.id}">
+  <summary><div class="lhead"><span class="lnum">Lección ${LECN[l.id]}</span>${badge(l.clase)}</div><h3>${l.titulo}</h3><span class="toggle"><span class="o">Ocultar lección ▴</span><span class="c">Mostrar lección ▾</span></span></summary>
+  <div class="lbody">
+   <section class="part"><h4><span class="pn">1</span>Teoría de clase</h4>
+    <dl class="kv"><dt>Esencia</dt><dd>${l.esencia}</dd><dt>Por qué</dt><dd>${l.porque}</dd></dl>
+    <div class="formula">${esc(l.formula)}</div>
+    <ul>${l.puntos.map(p=>`<li>${p}</li>`).join("")}</ul>
+    <p class="src">Fuente: ${l.fuente}</p></section>
+   <section class="part"><h4><span class="pn">2</span>Método general</h4>
+    <ol>${l.metodo.map(p=>`<li>${p}</li>`).join("")}</ol></section>
+   <section class="part ap"><h4><span class="pn">3</span>Aplicación en mi guía · Ejercicio</h4>
+    <p>${l.apl.texto}</p>
+    <p class="origin">${l.apl.origen}</p>
+    <p class="warn">Atención: ${l.apl.aviso}</p></section>
+  </div></details>`;
+}
+
+function qHTML(q){
+  const t=S.ans[q.id]||[];const r=res(q);const done=(r!==null&&r!=="p");
+  const opts=q.op.map((o,i)=>{
+    let cls="opt";
+    if(t.includes(i)&&i!==q.ok)cls+=" wrong";
+    if(done&&i===q.ok)cls+=" right";
+    if(done&&!t.includes(i)&&i!==q.ok)cls+=" dim";
+    const dis=done||t.includes(i);
+    return `<button class="${cls}" data-q="${q.id}" data-i="${i}" ${dis?"disabled":""}><span class="L">${LET[i]}</span><span>${o}</span></button>`;
+  }).join("");
+  let fb="";
+  if(r==="p"){fb=`<div class="fb hint" role="status"><p class="v">Todavía no. Pista:</p><p>${q.pista}</p><p class="pts">Tienes un segundo intento (vale 0,5 puntos).</p></div>`;}
+  else if(r===1){fb=`<div class="fb good" role="status"><p class="v">Correcta al primer intento · 1 punto</p><p>${q.exp}</p><p class="src"><b>Dónde estudiarlo:</b> ${q.estudiar}</p></div>`;}
+  else if(r===0.5){fb=`<div class="fb half" role="status"><p class="v">Correcta con pista · 0,5 puntos</p><p>${q.exp}</p><p class="src"><b>Dónde estudiarlo:</b> ${q.estudiar}</p></div>`;}
+  else if(r===0){fb=`<div class="fb miss" role="status"><p class="v">Incorrecta en ambos intentos · 0 puntos. La correcta es la ${LET[q.ok]}.</p><p>${q.exp}</p><p class="src"><b>Fuente y dónde estudiarlo:</b> ${q.estudiar}</p></div>`;}
+  return `<article class="q" id="${q.id}"><div class="qhead"><span class="qn">Pregunta ${q.n} de ${TOTAL}</span><span class="chip t-${q.tipo}">${TIPOS[q.tipo]}</span></div><p class="stem">${q.enun}</p><div class="opts">${opts}</div>${fb}</article>`;
+}
+
+function studyList(qs){
+  const items=qs.filter(q=>{const r=res(q);return r===0||r===0.5;}).sort((a,b)=>res(a)-res(b));
+  if(!items.length)return `<p class="muted">Ninguna pregunta fallada ni con pista en este grupo.</p>`;
+  return `<ul class="studylist">${items.map(q=>{const r=res(q);return `<li><span class="tag ${r===0?"z":"h"}">${r===0?"0 pts":"0,5"}</span><span class="what">P${q.n} · ${q.tema}</span><span class="where">${q.estudiar}</span></li>`;}).join("")}</ul>`;
+}
+
+function blockSummary(b){
+  const r=blockScore(b);const qs=blockQs(b);
+  const idx=BLOQUES.indexOf(b);const next=BLOQUES[idx+1];
+  if(r.d<r.n){return `<section class="summary" id="sum-${b.id}"><h3>Resumen del ${b.nombre.toLowerCase()}</h3><p class="muted">Llevas ${r.d} de ${r.n} preguntas cerradas (${fmt(r.s)} puntos). El resumen completo aparece al terminar las 10.</p></section>`;}
+  return `<section class="summary" id="sum-${b.id}"><h3>Resumen del ${b.nombre.toLowerCase()}</h3>
+   <div class="big">${fmt(r.s)}<small> / 10 puntos</small></div><div class="meter"><i style="width:${r.s*10}%"></i></div>
+   <p class="muted">Qué estudiar (solo preguntas falladas o acertadas con pista):</p>${studyList(qs)}
+   <div class="actions">${next?`<button class="btn solid next" data-tab="${next.id}">Ir al ${next.nombre.toLowerCase()}</button>`:`<button class="btn solid next" data-tab="fin">Ver resultado final</button>`}
+   <span id="cf-${b.id}"><button class="btn danger" data-reset="${b.id}">Reiniciar este bloque</button></span></div></section>`;
+}
+
+function renderBlock(b){
+  const html=`<div class="blockhead"><span class="num">${b.nombre} · preguntas ${blockQs(b)[0].n}–${blockQs(b).slice(-1)[0].n}</span><h2>${b.titulo}</h2><p>${b.desc}</p></div>
+   <div class="stream">${b.items.map(it=>it.k==="q"?qHTML(it):lessonHTML(it)).join("")}${blockSummary(b)}</div>`;
+  $("#main").innerHTML=html;
+}
+
+function renderFinal(){
+  let s=0,d=0;BLOQUES.forEach(b=>{const r=blockScore(b);s+=r.s;d+=r.d;});
+  const all=Object.values(QS);
+  const zero=all.filter(q=>res(q)===0),half=all.filter(q=>res(q)===0.5);
+  const mins=zero.length*15+half.length*8;
+  const rows=BLOQUES.map(b=>{const r=blockScore(b);return `<div class="brow"><span>${b.nombre} · ${b.titulo}</span><span class="num">${fmt(r.s)} / 10${r.d<10?` · faltan ${10-r.d}`:""}</span><div class="meter"><i style="width:${r.s*10}%"></i></div></div>`;}).join("");
+  let plan="";
+  if(!zero.length&&!half.length){plan=d===TOTAL?`<p class="muted">Acertaste todo al primer intento. Para mantenerlo, repasa los métodos de las lecciones 7 a 11 y 18 a 22 (los ejercicios de clase y del Módulo 3) antes del examen.</p>`:`<p class="muted">Todavía no hay temas pendientes. Termina las preguntas para armar tu plan.</p>`;}
+  else{
+    plan=`<p class="muted">Tiempo estimado: ≈ ${mins} minutos (15 por tema fallado, 8 por tema con pista).</p>`;
+    if(zero.length)plan+=`<h3>Prioridad 1 · temas fallados</h3><p class="muted">Relee la lección completa, rehaz el ejercicio del paso 3 y vuelve a responder la pregunta.</p>${studyList(zero)}`;
+    if(half.length)plan+=`<h3>Prioridad 2 · acertados con pista</h3><p class="muted">Repasa el método general (paso 2) y la fuente indicada.</p>${studyList(half)}`;
+  }
+  $("#main").innerHTML=`<div class="blockhead"><span class="num">Resultado</span><h2>Resultado total y plan de repaso</h2><p>${d<TOTAL?`Llevas ${d} de ${TOTAL} preguntas cerradas. El resultado se completa al terminar los cuatro bloques.`:`Completaste las ${TOTAL} preguntas.`}</p></div>
+  <div class="stream"><section class="summary"><div class="big">${fmt(s)}<small> / ${TOTAL} puntos · ${Math.round(s/TOTAL*100)}%</small></div><div class="meter"><i style="width:${s/TOTAL*100}%"></i></div><div class="rows">${rows}</div></section>
+  <section class="summary"><h3>Plan de repaso</h3>${plan}</section>
+  <section class="summary"><h3>Empezar de nuevo</h3><p class="muted">Borra todas tus respuestas guardadas en este navegador.</p><div class="actions" id="cf-all"><button class="btn danger" data-reset="all">Reiniciar todo</button></div></section></div>`;
+}
+
+function render(){
+  renderTop();
+  if(S.tab==="fin")renderFinal();else renderBlock(BLOQUES.find(b=>b.id===S.tab)||BLOQUES[0]);
+}
+
+/* ---------------- EVENTOS ---------------- */
+document.addEventListener("click",e=>{
+  const tabBtn=e.target.closest("[data-tab]");
+  if(tabBtn){S.tab=tabBtn.dataset.tab;save();render();window.scrollTo({top:0});return;}
+  const opt=e.target.closest(".opt");
+  if(opt&&!opt.disabled){
+    const q=QS[opt.dataset.q];const i=+opt.dataset.i;const t=S.ans[q.id]||[];
+    if(res(q)!==null&&res(q)!=="p")return;
+    t.push(i);S.ans[q.id]=t;save();
+    document.getElementById(q.id).outerHTML=qHTML(q);
+    const b=BLOQUES.find(x=>x.id===q.b);document.getElementById("sum-"+b.id).outerHTML=blockSummary(b);
+    renderTop();
+    const fb=document.querySelector(`#${q.id} .fb`);if(fb&&fb.getBoundingClientRect().bottom>window.innerHeight)fb.scrollIntoView({block:"nearest",behavior:"smooth"});
+    return;
+  }
+  const rs=e.target.closest("[data-reset]");
+  if(rs){const w=rs.dataset.reset;const box=rs.parentElement;
+    box.innerHTML=`<span class="confirm">¿Borrar ${w==="all"?"todas tus respuestas":"las respuestas de este bloque"}? <button class="btn danger" data-doreset="${w}">Sí, borrar</button><button class="btn" data-cancel="1">Cancelar</button></span>`;return;}
+  const dr=e.target.closest("[data-doreset]");
+  if(dr){const w=dr.dataset.doreset;
+    if(w==="all"){S.ans={};S.tab="b1";}else{blockQs(BLOQUES.find(b=>b.id===w)).forEach(q=>delete S.ans[q.id]);}
+    save();render();window.scrollTo({top:0});return;}
+  if(e.target.closest("[data-cancel]")){render();return;}
+});
+render();
+</script>
+
+</body>
+</html>
